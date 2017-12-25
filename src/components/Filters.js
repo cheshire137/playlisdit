@@ -1,67 +1,17 @@
 import React, { Component } from 'react'
-import clickOutside from 'react-click-outside'
-
-const sections = {
-  hot: 'Hot',
-  new: 'New',
-  rising: 'Rising',
-  controversial: 'Controversial',
-  top: 'Top'
-}
+import SectionMenu from './SectionMenu'
 
 class Filters extends Component {
-  state = { isOpen: false }
-
-  chooseSection(section) {
-    this.setState(prevState => ({ isOpen: false }))
-    this.props.chooseSection(section)
-  }
-
-  handleClickOutside() {
-    this.setState(prevState => ({ isOpen: false }))
-  }
-
-  toggleOpen() {
-    this.setState(prevState => ({ isOpen: !prevState.isOpen }))
-  }
-
   render() {
-    const { isOpen } = this.state
-    const { activeSection } = this.props
+    const { activeSection, chooseSection } = this.props
 
     return (
       <div className="d-flex flex-items-center flex-justify-between mb-4">
         <h2 className="subtitle mb-0">Spotify Posts on Reddit</h2>
-        <div className={`dropdown ${isOpen ? 'is-active' : ''}`}>
-          <div className="dropdown-trigger">
-            <button
-              className="button"
-              aria-haspopup="true"
-              aria-controls="section-menu"
-              onClick={() => this.toggleOpen()}
-            >
-              <span>Reddit: {sections[activeSection]} posts</span>
-              <span className="icon is-small">
-                <i className="ion-arrow-down-b" aria-hidden="true" />
-              </span>
-            </button>
-          </div>
-          <div className="dropdown-menu" id="section-menu" role="menu">
-            <div className="dropdown-content">
-              {Object.keys(sections).map(section => (
-                <button
-                  type="button"
-                  onClick={() => this.chooseSection(section)}
-                  key={section}
-                  className={`dropdown-item button ${section === activeSection ? 'is-active' : ''}`}
-                >{sections[section]}</button>
-              ))}
-            </div>
-          </div>
-        </div>
+        <SectionMenu activeSection={activeSection} chooseSection={chooseSection} />
       </div>
     )
   }
 }
 
-export default clickOutside(Filters)
+export default Filters
