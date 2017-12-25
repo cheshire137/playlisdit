@@ -42,24 +42,26 @@ class PlaylistView extends Component {
         </section>
         <section className="section">
           <div className="container">
-            {posts ? posts.length > 0 ? (
+            {posts ? (
               <div>
                 <Filters
                   activeSection={section}
                   chooseSection={s => this.chooseSection(s)}
                 />
-                <ul>
-                  {posts.map(post => {
-                    return (
-                      <li key={post.id}>
-                        <RedditPost {...post} />
-                      </li>
-                    )
-                  })}
-                </ul>
+                {posts.length > 0 ? (
+                  <ul>
+                    {posts.map(post => {
+                      return (
+                        <li key={post.id}>
+                          <RedditPost {...post} />
+                        </li>
+                      )
+                    })}
+                  </ul>
+                ) : (
+                  <p>No {section} Spotify posts on Reddit.</p>
+                )}
               </div>
-            ) : (
-              <p>No {section} Spotify posts on Reddit.</p>
             ) : (
               <p>Loading...</p>
             )}
