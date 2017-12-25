@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import RedditAPI from '../models/RedditAPI'
+import RedditPost from './RedditPost'
 
 class PlaylistView extends Component {
   state = { posts: null }
@@ -33,7 +34,7 @@ class PlaylistView extends Component {
                 {posts.map(post => {
                   return (
                     <li key={post.id}>
-                      {post.title}
+                      <RedditPost {...post} />
                     </li>
                   )
                 })}
