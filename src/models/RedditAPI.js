@@ -17,7 +17,10 @@ class RedditAPI extends Fetcher {
     if (opts.section && opts.section !== 'hot') {
       section = `/${opts.section}`
     }
-    const path = `/domain/${opts.domain}${section}.json`
+    let path = `/domain/${opts.domain}${section}.json`
+    if (opts.time) {
+      path += `?t=${opts.time}`
+    }
     const resp = await this.get(path)
     return resp.data.children.map(child => child.data)
   }

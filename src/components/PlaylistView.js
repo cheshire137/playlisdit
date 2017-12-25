@@ -4,7 +4,7 @@ import RedditPost from './RedditPost'
 import Filters from './Filters'
 
 class PlaylistView extends Component {
-  state = { posts: null, section: 'top' }
+  state = { posts: null, section: 'top', time: 'day' }
 
   constructor(props) {
     super(props)
@@ -16,20 +16,23 @@ class PlaylistView extends Component {
   }
 
   chooseSection(section) {
-    this.setState(prevState => ({ section }), () => {
-      this.fetchPosts()
-    })
+    this.setState(prevState => ({ section }), () => this.fetchPosts())
+  }
+
+  chooseTime(time) {
+    this.setState(prevState => ({ time }), () => this.fetchPosts())
   }
 
   async fetchPosts() {
+    const { section, time } = this.state
     const posts = await this.redditAPI.spotifyPosts({
-      section: this.state.section
+      section, time
     })
     this.setState(prevState => ({ posts }))
   }
 
   render() {
-    const { posts, section } = this.state
+    const { posts, section, time } = this.state
 
     return (
       <div>
@@ -46,7 +49,9 @@ class PlaylistView extends Component {
               <div>
                 <Filters
                   activeSection={section}
+                  activeTime={time}
                   chooseSection={s => this.chooseSection(s)}
+                  chooseTime={t => this.chooseTime(t)}
                 />
                 {posts.length > 0 ? (
                   <ul>

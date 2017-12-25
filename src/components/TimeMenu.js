@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
 import clickOutside from 'react-click-outside'
 
-const sections = {
-  hot: 'Hot',
-  new: 'New',
-  rising: 'Rising',
-  controversial: 'Controversial',
-  top: 'Top'
+const times = {
+  hour: 'Past hour',
+  day: 'Past 24 hours',
+  week: 'Past week',
+  month: 'Past month',
+  year: 'Past year',
+  all: 'All time'
 }
 
-class SectionMenu extends Component {
+class TimeMenu extends Component {
   state = { isOpen: false }
 
-  chooseSection(section) {
+  chooseTime(time) {
     this.setState(prevState => ({ isOpen: false }))
-    this.props.chooseSection(section)
+    this.props.chooseTime(time)
   }
 
   handleClickOutside() {
@@ -27,10 +28,10 @@ class SectionMenu extends Component {
 
   render() {
     const { isOpen } = this.state
-    const { activeSection } = this.props
+    const { activeTime } = this.props
 
     return (
-      <div className={`dropdown mr-3 ${isOpen ? 'is-active' : ''}`}>
+      <div className={`dropdown ${isOpen ? 'is-active' : ''}`}>
         <div className="dropdown-trigger">
           <button
             className="button"
@@ -38,7 +39,7 @@ class SectionMenu extends Component {
             aria-controls="section-menu"
             onClick={() => this.toggleOpen()}
           >
-            <span>Reddit: {sections[activeSection]} posts</span>
+            <span>Time frame: {times[activeTime]}</span>
             <span className="icon is-small">
               <i className="ion-arrow-down-b" aria-hidden="true" />
             </span>
@@ -46,13 +47,13 @@ class SectionMenu extends Component {
         </div>
         <div className="dropdown-menu" id="section-menu" role="menu">
           <div className="dropdown-content">
-            {Object.keys(sections).map(section => (
+            {Object.keys(times).map(time => (
               <button
                 type="button"
-                onClick={() => this.chooseSection(section)}
-                key={section}
-                className={`dropdown-item button ${section === activeSection ? 'is-active' : ''}`}
-              >{sections[section]}</button>
+                onClick={() => this.chooseTime(time)}
+                key={time}
+                className={`dropdown-item button ${time === activeTime ? 'is-active' : ''}`}
+              >{times[time]}</button>
             ))}
           </div>
         </div>
@@ -61,4 +62,4 @@ class SectionMenu extends Component {
   }
 }
 
-export default clickOutside(SectionMenu)
+export default clickOutside(TimeMenu)
