@@ -30,8 +30,9 @@ class Filters extends Component {
     const { activeSection } = this.props
 
     return (
-      <div className="clearfix">
-        <div className={`float-right dropdown ${isOpen ? 'is-active' : ''}`}>
+      <div className="d-flex flex-items-center flex-justify-between mb-4">
+        <h2 className="subtitle mb-0">Spotify Posts on Reddit</h2>
+        <div className={`dropdown ${isOpen ? 'is-active' : ''}`}>
           <div className="dropdown-trigger">
             <button
               className="button"
