@@ -40,7 +40,7 @@ class Filters extends Component {
               aria-controls="section-menu"
               onClick={() => this.toggleOpen()}
             >
-              <span>Reddit: {sections[activeSection]}</span>
+              <span>Reddit: {sections[activeSection]} posts</span>
               <span className="icon is-small">
                 <i className="ion-arrow-down-b" aria-hidden="true" />
               </span>
