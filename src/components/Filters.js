@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import clickOutside from 'react-click-outside'
 
 const sections = {
   hot: 'Hot',
@@ -16,6 +17,10 @@ class Filters extends Component {
     this.props.chooseSection(section)
   }
 
+  handleClickOutside() {
+    this.setState(prevState => ({ isOpen: false }))
+  }
+
   toggleOpen() {
     this.setState(prevState => ({ isOpen: !prevState.isOpen }))
   }
@@ -25,30 +30,32 @@ class Filters extends Component {
     const { activeSection } = this.props
 
     return (
-      <div className={`dropdown ${isOpen ? 'is-active' : ''}`}>
-        <div className="dropdown-trigger">
-          <button
-            className="button"
-            aria-haspopup="true"
-            aria-controls="section-menu"
-            onClick={() => this.toggleOpen()}
-          >
-            <span>{sections[activeSection]}</span>
-            <span className="icon is-small">
-              <i className="ion-arrow-down-b" aria-hidden="true" />
-            </span>
-          </button>
-        </div>
-        <div className="dropdown-menu" id="section-menu" role="menu">
-          <div className="dropdown-content">
-            {Object.keys(sections).map(section => (
-              <button
-                type="button"
-                onClick={() => this.chooseSection(section)}
-                key={section}
-                className={`dropdown-item button ${section === activeSection ? 'is-active' : ''}`}
-              >{sections[section]}</button>
-            ))}
+      <div className="clearfix">
+        <div className={`float-right dropdown ${isOpen ? 'is-active' : ''}`}>
+          <div className="dropdown-trigger">
+            <button
+              className="button"
+              aria-haspopup="true"
+              aria-controls="section-menu"
+              onClick={() => this.toggleOpen()}
+            >
+              <span>Reddit: {sections[activeSection]}</span>
+              <span className="icon is-small">
+                <i className="ion-arrow-down-b" aria-hidden="true" />
+              </span>
+            </button>
+          </div>
+          <div className="dropdown-menu" id="section-menu" role="menu">
+            <div className="dropdown-content">
+              {Object.keys(sections).map(section => (
+                <button
+                  type="button"
+                  onClick={() => this.chooseSection(section)}
+                  key={section}
+                  className={`dropdown-item button ${section === activeSection ? 'is-active' : ''}`}
+                >{sections[section]}</button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -56,4 +63,4 @@ class Filters extends Component {
   }
 }
 
-export default Filters
+export default clickOutside(Filters)
