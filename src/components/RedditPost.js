@@ -33,6 +33,7 @@ class RedditPost extends Component {
             style={linkStyle}
           ><img
             src={thumbnailUrl}
+            alt={`${title} thumbnail`}
           /></ExternalLink>
         ) : ''}
         <h3>

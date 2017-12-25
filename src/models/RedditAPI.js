@@ -13,8 +13,11 @@ class RedditAPI extends Fetcher {
 
   async domainPosts(opts) {
     opts = opts || {}
-    const section = opts.section || 'top'
-    const path = `/domain/${opts.domain}/${section}.json`
+    let section = ''
+    if (opts.section && opts.section !== 'hot') {
+      section = `/${opts.section}`
+    }
+    const path = `/domain/${opts.domain}${section}.json`
     const resp = await this.get(path)
     return resp.data.children.map(child => child.data)
   }

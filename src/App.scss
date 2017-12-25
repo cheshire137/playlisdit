@@ -1,4 +1,5 @@
 @import "primer-utilities/index.scss";
+@import "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css";
 
 .thumbnail-link {
   width: 100px;
@@ -10,4 +11,25 @@
   img {
     visibility: hidden;
   }
+}
+
+.button.dropdown-item {
+  border: none;
+  width: 100%;
+  text-align: left;
+
+  &:hover,
+  &:focus {
+    color: #0a0a0a;
+    background-color: whitesmoke;
+  }
+
+  &.is-active {
+    background-color: #3273dc;
+    color: #fff;
+  }
+}
+
+.dropdown-menu {
+  min-width: 5em;
 }
