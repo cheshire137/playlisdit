@@ -1,5 +1,4 @@
 import Fetcher from './Fetcher'
-import RedditPost from './RedditPost'
 
 class RedditAPI extends Fetcher {
   constructor(username) {
