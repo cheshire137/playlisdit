@@ -4,6 +4,7 @@ import SpotifyPlaylist from './SpotifyPlaylist'
 import SpotifyTrack from './SpotifyTrack'
 import SpotifyAlbum from './SpotifyAlbum'
 import RedditLogo from './RedditLogo'
+import SpotifyLogo from './SpotifyLogo'
 
 class RedditPost extends Component {
   getThumbnailUrl() {
@@ -44,7 +45,7 @@ class RedditPost extends Component {
             <ExternalLink
               url={redditPostUrl}
             >
-              <RedditLogo fill="#3675d9" className="mr-1" />
+              <RedditLogo className="mr-1" />
               <span>{title}</span>
             </ExternalLink>
           </h3>
@@ -61,7 +62,11 @@ class RedditPost extends Component {
           ) : (
             <ExternalLink
               url={url}
-            >Spotify</ExternalLink>
+              className="spotify-link"
+            >
+              <SpotifyLogo className="mr-1" />
+              <span>View on Spotify</span>
+            </ExternalLink>
           )}
         </div>
       </div>
