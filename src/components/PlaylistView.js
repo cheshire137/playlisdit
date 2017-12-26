@@ -163,9 +163,11 @@ class PlaylistView extends Component {
       }
       return 1
     })
+
     if (counts.length < 1) {
       return null
     }
+
     return counts.reduce((acc, val) => acc + val)
   }
 
