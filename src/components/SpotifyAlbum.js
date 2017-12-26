@@ -20,9 +20,9 @@ class SpotifyAlbum extends Component {
             {name}
           </ExternalLink>
         </h3>
-        <ol className="spotify-album-tracks-list mt-1 width-full">
-          {tracks.map(track => (
-            <li key={track.id}>
+        <ol className="spotify-album-tracks-list tracks-list mt-1 width-full">
+          {tracks.map((track, i) => (
+            <li key={`${track.id}-${i}`}>
               <SpotifyTrack {...track} />
             </li>
           ))}

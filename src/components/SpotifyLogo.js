@@ -6,13 +6,13 @@ class SpotifyLogo extends Component {
     const fill = this.props.fill || '#2ab858'
 
     return (
-      <span className={`icon ${className}`}>
+      <span className={`icon spotify-icon ${className}`}>
         <svg
           width="24"
           height="24"
           xmlns="http://www.w3.org/2000/svg"
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           fill={fill}
         >
           <path

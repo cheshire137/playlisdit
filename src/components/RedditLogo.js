@@ -6,7 +6,7 @@ class RedditLogo extends Component {
     const fill = this.props.fill || '#3675d9'
 
     return (
-      <span className={`icon ${className}`}>
+      <span className={`icon reddit-icon ${className}`}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"

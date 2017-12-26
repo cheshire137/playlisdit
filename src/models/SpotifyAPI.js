@@ -1,5 +1,4 @@
 import Fetcher from './Fetcher'
-import Config from '../config.json'
 import LocalStorage from './LocalStorage'
 
 class SpotifyAPI extends Fetcher {
