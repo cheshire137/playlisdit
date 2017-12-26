@@ -6,12 +6,37 @@ import RedditPost from './RedditPost'
 import Filters from './Filters'
 import Header from './Header'
 
+const caseInsensitiveCompare = (a, b) => {
+  const lowerA = a.toLowerCase()
+  const lowerB = b.toLowerCase()
+  if (lowerA < lowerB) {
+    return -1
+  }
+  return lowerA > lowerB ? 1 : 0
+}
+
+const getSubreddits = posts => {
+  const result = []
+  if (!posts || posts.length < 1) {
+    return result
+  }
+
+  for (const post of posts) {
+    if (result.indexOf(post.subreddit) < 0) {
+      result.push(post.subreddit)
+    }
+  }
+
+  return result.sort(caseInsensitiveCompare)
+}
+
 class PlaylistView extends Component {
   constructor(props) {
     super(props)
     this.state = {
       posts: null,
       spotifyInfo: {},
+      activeSubreddits: [],
       time: props.match.params.time || 'day',
       section: props.match.params.section || 'top'
     }
@@ -29,6 +54,10 @@ class PlaylistView extends Component {
 
   componentDidMount() {
     this.fetchPosts()
+  }
+
+  chooseSubreddits(activeSubreddits) {
+    this.setState(prevState => ({ activeSubreddits }))
   }
 
   chooseSection(section) {
@@ -59,7 +88,8 @@ class PlaylistView extends Component {
       return
     }
 
-    this.setState(prevState => ({ posts }))
+    const subreddits = getSubreddits(posts)
+    this.setState(prevState => ({ posts, subreddits, activeSubreddits: subreddits }))
 
     const spotifyInfo = await this.getSpotifyInfo()
     this.setState(prevState => ({ spotifyInfo }))
@@ -155,15 +185,19 @@ class PlaylistView extends Component {
     return result
   }
 
-  getTrackCount() {
+  getTrackCount(visiblePosts) {
     const { spotifyInfo } = this.state
-    const counts = Object.values(spotifyInfo).map(item => {
+    if (Object.keys(spotifyInfo).length < 1) {
+      return null
+    }
+
+    const spotifyItems = visiblePosts.map(post => spotifyInfo[post.pathname]).filter(item => item)
+    const counts = spotifyItems.map(item => {
       if (item.type === 'album' || item.type === 'playlist') {
         return item.tracks.total
       }
       return 1
     })
-
     if (counts.length < 1) {
       return null
     }
@@ -171,25 +205,14 @@ class PlaylistView extends Component {
     return counts.reduce((acc, val) => acc + val)
   }
 
-  getSubreddits() {
-    const { posts } = this.state
-    const result = []
-    if (!posts || posts.length < 1) {
-      return result
-    }
-
-    for (const post of posts) {
-      if (result.indexOf(post.subreddit) < 0) {
-        result.push(post.subreddit)
-      }
-    }
-    return result
-  }
-
   render() {
-    const { posts, section, time, spotifyInfo } = this.state
-    const trackCount = this.getTrackCount()
-    const subreddits = this.getSubreddits()
+    const { posts, section, time, spotifyInfo, activeSubreddits,
+            subreddits } = this.state
+    let filteredPosts = []
+    if (posts) {
+      filteredPosts = posts.filter(post => activeSubreddits.indexOf(post.subreddit) > -1)
+    }
+    const trackCount = this.getTrackCount(filteredPosts)
 
     return (
       <div>
@@ -203,22 +226,30 @@ class PlaylistView extends Component {
                   activeSection={section}
                   activeTime={time}
                   subreddits={subreddits}
+                  activeSubreddits={activeSubreddits}
+                  chooseSubreddits={subs => this.chooseSubreddits(subs)}
                   chooseSection={s => this.chooseSection(s)}
                   chooseTime={t => this.chooseTime(t)}
                 />
                 {posts.length > 0 ? (
-                  <ul>
-                    {posts.map(post => {
-                      return (
-                        <li key={post.id}>
-                          <RedditPost
-                            {...post}
-                            spotifyInfo={spotifyInfo[post.pathname]}
-                          />
-                        </li>
-                      )
-                    })}
-                  </ul>
+                  <div>
+                    {filteredPosts.length > 0 ? (
+                      <div>
+                        {filteredPosts.map(post => {
+                          return (
+                            <div key={post.id}>
+                              <RedditPost
+                                {...post}
+                                spotifyInfo={spotifyInfo[post.pathname]}
+                              />
+                            </div>
+                          )
+                        })}
+                      </div>
+                    ) : (
+                      <p>No {section} Spotify posts on Reddit match your filters.</p>
+                    )}
+                  </div>
                 ) : (
                   <p>No {section} Spotify posts on Reddit.</p>
                 )}
