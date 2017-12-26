@@ -71,33 +71,33 @@ class PlaylistView extends Component {
     const trackIDs = []
     const albumIDs = []
     const playlistIDs = []
-    const postUrlsByTrackID = {}
-    const postUrlsByAlbumID = {}
-    const postUrlsByPlaylistID = {}
+    const postPathnamesByTrackID = {}
+    const postPathnamesByAlbumID = {}
+    const postPathnamesByPlaylistID = {}
 
     for (const post of posts) {
-      const url = post.url
-      const lowercaseUrl = url.toLowerCase()
+      const pathname = post.pathname
+      const lowercasePathname = pathname.toLowerCase()
 
-      if (lowercaseUrl.indexOf('/playlist/') > -1) {
-        const parts = url.split(/\/playlist\//i)
+      if (lowercasePathname.indexOf('/playlist/') > -1) {
+        const parts = pathname.split(/\/playlist\//i)
         const head = parts[0].split('/user/')
         const id = parts[parts.length - 1].split('?')[0]
         const user = head[head.length - 1]
         playlistIDs.push({ user, id })
-        postUrlsByPlaylistID[id] = url
+        postPathnamesByPlaylistID[id] = pathname
 
-      } else if (lowercaseUrl.indexOf('/track/') > -1) {
-        const parts = url.split(/\/track\//i)
+      } else if (lowercasePathname.indexOf('/track/') > -1) {
+        const parts = pathname.split(/\/track\//i)
         const id = parts[parts.length - 1].split('?')[0]
         trackIDs.push(id)
-        postUrlsByTrackID[id] = url
+        postPathnamesByTrackID[id] = pathname
 
-      } else if (lowercaseUrl.indexOf('/album/') > -1) {
-        const parts = url.split(/\/album\//i)
+      } else if (lowercasePathname.indexOf('/album/') > -1) {
+        const parts = pathname.split(/\/album\//i)
         const id = parts[parts.length - 1].split('?')[0]
         albumIDs.push(id)
-        postUrlsByAlbumID[id] = url
+        postPathnamesByAlbumID[id] = pathname
       }
     }
 
@@ -106,8 +106,8 @@ class PlaylistView extends Component {
       try {
         tracks = await this.spotifyAPI.tracks(trackIDs)
         for (const track of tracks) {
-          const url = postUrlsByTrackID[track.id]
-          result[url] = track
+          const pathname = postPathnamesByTrackID[track.id]
+          result[pathname] = track
         }
       } catch (error) {
         console.error('failed to fetch Spotify tracks', error)
@@ -123,8 +123,8 @@ class PlaylistView extends Component {
       try {
         albums = await this.spotifyAPI.albums(albumIDs)
         for (const album of albums) {
-          const url = postUrlsByAlbumID[album.id]
-          result[url] = album
+          const pathname = postPathnamesByAlbumID[album.id]
+          result[pathname] = album
         }
       } catch (error) {
         console.error('failed to fetch Spotify albums', error)
@@ -140,8 +140,8 @@ class PlaylistView extends Component {
         let playlist
         try {
           playlist = await this.spotifyAPI.playlist(playlistID.user, playlistID.id)
-          const url = postUrlsByPlaylistID[playlist.id]
-          result[url] = playlist
+          const pathname = postPathnamesByPlaylistID[playlist.id]
+          result[pathname] = playlist
         } catch (error) {
           console.error('failed to fetch playlist', error)
           if (error.response.status === 401) {
@@ -196,7 +196,7 @@ class PlaylistView extends Component {
                         <li key={post.id}>
                           <RedditPost
                             {...post}
-                            spotifyInfo={spotifyInfo[post.url]}
+                            spotifyInfo={spotifyInfo[post.pathname]}
                           />
                         </li>
                       )

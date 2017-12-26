@@ -22,7 +22,13 @@ class RedditAPI extends Fetcher {
       path += `?t=${opts.time}`
     }
     const resp = await this.get(path)
-    return resp.data.children.map(child => child.data)
+    return resp.data.children.map(child => {
+      const post = child.data
+      if (post.url) {
+        post.pathname = new URL(post.url).pathname
+      }
+      return post
+    })
   }
 }
 
