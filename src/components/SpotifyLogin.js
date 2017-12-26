@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Header from './Header'
+import SpotifyLogo from './SpotifyLogo'
 import Config from '../config.json'
 import SpotifyAPI from '../models/SpotifyAPI'
 import { Redirect } from 'react-router-dom'
@@ -36,11 +37,18 @@ class SpotifyLogin extends Component {
       <div>
         <Header />
         <section className="section">
-          <div className="container">
+          <div className="container has-text-centered">
+            <h3 className="subtitle mt-0">
+              Sign into Spotify to create playlists from
+              music shared on Reddit.
+            </h3>
             <a
               href={loginUrl}
               className="button is-large is-primary"
-            >Log into Spotify</a>
+            >
+              <SpotifyLogo className="mr-1" />
+              Log in with Spotify
+            </a>
           </div>
         </section>
       </div>
