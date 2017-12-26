@@ -5,6 +5,7 @@ import SpotifyTrack from './SpotifyTrack'
 import SpotifyAlbum from './SpotifyAlbum'
 import RedditLogo from './RedditLogo'
 import SpotifyLogo from './SpotifyLogo'
+import NumberHelper from '../models/NumberHelper'
 
 class RedditPost extends Component {
   getThumbnailUrl() {
@@ -20,8 +21,14 @@ class RedditPost extends Component {
   }
 
   render() {
-    const { title, permalink, url, spotifyInfo } = this.props
+    const { title, permalink, url, spotifyInfo, created, score } = this.props
+    const date = new Date(created * 1000)
+    const scoreUnit = score === 1 ? 'point' : 'points'
+    const commentCount = this.props.num_comments
+    const commentUnit = commentCount === 1 ? 'comment' : 'comments'
     const redditPostUrl = `https://www.reddit.com${permalink}`
+    const subreddit = this.props.subreddit_name_prefixed
+    const subredditUrl = `https://www.reddit.com${subreddit}`
     const thumbnailUrl = this.getThumbnailUrl()
     const linkStyle = {}
     if (thumbnailUrl) {
@@ -50,6 +57,29 @@ class RedditPost extends Component {
               <span>{title}</span>
             </ExternalLink>
           </h3>
+          <div className="is-size-7 text-gray">
+            <ExternalLink
+              url={redditPostUrl}
+              className="text-gray"
+            >{date.toLocaleDateString()}</ExternalLink>
+            <span> &middot; </span>
+            <span title={score}>
+              <strong>{NumberHelper.abbreviate(score)}</strong> {scoreUnit}
+            </span>
+            <span> &middot; </span>
+            <ExternalLink
+              url={redditPostUrl}
+              className="text-gray"
+              title={commentCount}
+            >
+              <strong>{NumberHelper.abbreviate(commentCount)}</strong> {commentUnit}
+            </ExternalLink>
+            <span> &middot; </span>
+            <ExternalLink
+              url={subredditUrl}
+              className="text-gray"
+            >{subreddit}</ExternalLink>
+          </div>
           {spotifyInfo ? (
             <div>
               {spotifyInfo.type === 'playlist' ? (
