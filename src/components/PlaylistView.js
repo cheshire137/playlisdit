@@ -155,8 +155,23 @@ class PlaylistView extends Component {
     return result
   }
 
+  getTrackCount() {
+    const { spotifyInfo } = this.state
+    const counts = Object.values(spotifyInfo).map(item => {
+      if (item.type === 'album' || item.type === 'playlist') {
+        return item.tracks.total
+      }
+      return 1
+    })
+    if (counts.length < 1) {
+      return null
+    }
+    return counts.reduce((acc, val) => acc + val)
+  }
+
   render() {
     const { posts, section, time, spotifyInfo } = this.state
+    const trackCount = this.getTrackCount()
 
     return (
       <div>
@@ -166,6 +181,7 @@ class PlaylistView extends Component {
             {posts ? (
               <div>
                 <Filters
+                  trackCount={trackCount}
                   activeSection={section}
                   activeTime={time}
                   chooseSection={s => this.chooseSection(s)}
