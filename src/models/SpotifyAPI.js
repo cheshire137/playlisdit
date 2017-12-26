@@ -53,7 +53,7 @@ class SpotifyAPI extends Fetcher {
     const headers = {
       Authorization: `Bearer ${SpotifyAPI.token()}`
     }
-    const resp = await this.get(`/v1/tracks?ids=${idsStr}`, headers)
+    const resp = await this.get(`/v1/tracks?ids=${encodeURIComponent(idsStr)}`, headers)
     return resp.tracks
   }
 
@@ -62,7 +62,7 @@ class SpotifyAPI extends Fetcher {
     const headers = {
       Authorization: `Bearer ${SpotifyAPI.token()}`
     }
-    const resp = await this.get(`/v1/albums?ids=${idsStr}`, headers)
+    const resp = await this.get(`/v1/albums?ids=${encodeURIComponent(idsStr)}`, headers)
     return resp.albums
   }
 
@@ -70,7 +70,7 @@ class SpotifyAPI extends Fetcher {
     const headers = {
       Authorization: `Bearer ${SpotifyAPI.token()}`
     }
-    return this.get(`/v1/users/${user}/playlists/${id}`, headers)
+    return this.get(`/v1/users/${encodeURIComponent(user)}/playlists/${encodeURIComponent(id)}`, headers)
   }
 }
 
