@@ -5,7 +5,7 @@ import SpotifyLogo from './SpotifyLogo'
 
 class SpotifyTrack extends Component {
   render() {
-    const { artists, name, className } = this.props
+    const { artists, name, className, hideArtists } = this.props
     const url = this.props.external_urls.spotify
 
     return (
@@ -17,10 +17,14 @@ class SpotifyTrack extends Component {
           <SpotifyLogo className="mr-1" />
           {name}
         </ExternalLink>
-        <span> by </span>
-        {artists.map(artist => (
-          <SpotifyArtist {...artist} key={artist.id} />
-        ))}
+        {hideArtists ? '' : (
+          <span>
+            <span> by </span>
+            {artists.map(artist => (
+              <SpotifyArtist {...artist} key={artist.id} />
+            ))}
+          </span>
+        )}
       </div>
     )
   }

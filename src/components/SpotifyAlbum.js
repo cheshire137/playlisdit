@@ -29,6 +29,7 @@ class SpotifyAlbum extends Component {
           <TrackCount count={trackCount} />
         </p>
         <TracksList
+          artistIDs={artists.map(artist => artist.id).sort()}
           tracks={tracks}
           trackCount={trackCount}
           className="spotify-album-tracks-list mt-1 width-full"
