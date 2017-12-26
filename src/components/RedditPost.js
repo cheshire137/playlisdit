@@ -15,7 +15,6 @@ class RedditPost extends Component {
   }
 
   render() {
-    console.log(this.props)
     const { title, permalink, url } = this.props
     const redditPostUrl = `https://www.reddit.com${permalink}`
     const thumbnailUrl = this.getThumbnailUrl()

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import RedditAPI from '../models/RedditAPI'
 import RedditPost from './RedditPost'
 import Filters from './Filters'
+import Header from './Header'
 
 class PlaylistView extends Component {
   state = { posts: null, section: 'top', time: 'day' }
@@ -31,18 +32,48 @@ class PlaylistView extends Component {
     this.setState(prevState => ({ posts }))
   }
 
+  getSpotifyIDs() {
+    const { posts } = this.state
+    const result = {}
+
+    for (const post of posts) {
+      const url = post.url.toLowerCase()
+
+      if (url.indexOf('/playlist/') > -1) {
+        const parts = url.split('/playlist/')
+        const head = parts[0].split('/user/')
+        result[url] = {
+          type: 'playlist',
+          id: parts[parts.length - 1].split('?')[0],
+          user: head[head.length - 1]
+        }
+
+      } else if (url.indexOf('/track/') > -1) {
+        const parts = url.split('/track/')
+        result[url] = {
+          type: 'track',
+          id: parts[parts.length - 1].split('?')[0]
+        }
+
+      } else if (url.indexOf('/album/') > -1) {
+        const parts = url.split('/album/')
+        result[url] = {
+          type: 'album',
+          id: parts[parts.length - 1].split('?')[0]
+        }
+      }
+    }
+
+    return result
+  }
+
   render() {
     const { posts, section, time } = this.state
+    const spotifyIDs = posts ? this.getSpotifyIDs() : {}
 
     return (
       <div>
-        <section className="hero is-link">
-          <div className="hero-body">
-            <div className="container">
-              <h1 className="title">Playlisdit</h1>
-            </div>
-          </div>
-        </section>
+        <Header />
         <section className="section">
           <div className="container">
             {posts ? (
