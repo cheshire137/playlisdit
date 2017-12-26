@@ -21,14 +21,9 @@ class RedditPost extends Component {
   }
 
   render() {
-    const { title, permalink, url, spotifyInfo, created, score } = this.props
-    const date = new Date(created * 1000)
-    const scoreUnit = score === 1 ? 'point' : 'points'
-    const commentCount = this.props.num_comments
-    const commentUnit = commentCount === 1 ? 'comment' : 'comments'
-    const redditPostUrl = `https://www.reddit.com${permalink}`
-    const subreddit = this.props.subreddit_name_prefixed
-    const subredditUrl = `https://www.reddit.com${subreddit}`
+    const { title, permalink, url, spotifyInfo, created, score,
+            commentsUrl, subreddit, subredditUrl, commentCount,
+            date, scoreUnit, commentUnit } = this.props
     const thumbnailUrl = this.getThumbnailUrl()
     const linkStyle = {}
     if (thumbnailUrl) {
@@ -50,16 +45,16 @@ class RedditPost extends Component {
         <div>
           <h3>
             <ExternalLink
-              url={redditPostUrl}
+              url={commentsUrl}
               className="reddit-link"
             >
               <RedditLogo className="mr-1" />
               <span>{title}</span>
             </ExternalLink>
           </h3>
-          <div className="is-size-7 text-gray">
+          <div className="reddit-post-meta is-size-7 text-gray">
             <ExternalLink
-              url={redditPostUrl}
+              url={commentsUrl}
               className="text-gray"
             >{date.toLocaleDateString()}</ExternalLink>
             <span> &middot; </span>
@@ -68,7 +63,7 @@ class RedditPost extends Component {
             </span>
             <span> &middot; </span>
             <ExternalLink
-              url={redditPostUrl}
+              url={commentsUrl}
               className="text-gray"
               title={commentCount}
             >

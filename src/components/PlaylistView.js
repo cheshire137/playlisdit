@@ -171,9 +171,25 @@ class PlaylistView extends Component {
     return counts.reduce((acc, val) => acc + val)
   }
 
+  getSubreddits() {
+    const { posts } = this.state
+    const result = []
+    if (!posts || posts.length < 1) {
+      return result
+    }
+
+    for (const post of posts) {
+      if (result.indexOf(post.subreddit) < 0) {
+        result.push(post.subreddit)
+      }
+    }
+    return result
+  }
+
   render() {
     const { posts, section, time, spotifyInfo } = this.state
     const trackCount = this.getTrackCount()
+    const subreddits = this.getSubreddits()
 
     return (
       <div>
@@ -186,6 +202,7 @@ class PlaylistView extends Component {
                   trackCount={trackCount}
                   activeSection={section}
                   activeTime={time}
+                  subreddits={subreddits}
                   chooseSection={s => this.chooseSection(s)}
                   chooseTime={t => this.chooseTime(t)}
                 />

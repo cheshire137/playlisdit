@@ -27,6 +27,13 @@ class RedditAPI extends Fetcher {
       if (post.url) {
         post.pathname = new URL(post.url).pathname
       }
+      post.commentsUrl = `https://www.reddit.com${post.permalink}`
+      post.subreddit = post.subreddit_name_prefixed
+      post.subredditUrl = `https://www.reddit.com${post.subreddit}`
+      post.commentCount = post.num_comments
+      post.commentUnit = post.commentCount === 1 ? 'comment' : 'comments'
+      post.date = new Date(post.created * 1000)
+      post.scoreUnit = post.score === 1 ? 'point' : 'points'
       return post
     })
   }
