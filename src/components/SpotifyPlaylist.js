@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ExternalLink from './ExternalLink'
-import SpotifyTrack from './SpotifyTrack'
 import SpotifyLogo from './SpotifyLogo'
+import TracksList from './TracksList'
 
 class SpotifyPlaylist extends Component {
   render() {
@@ -20,13 +20,10 @@ class SpotifyPlaylist extends Component {
             {name}
           </ExternalLink>
         </h3>
-        <ol className="spotify-playlist-tracks-list tracks-list mt-1 width-full">
-          {tracks.map((track, i) => (
-            <li key={`${track.id}-${i}`}>
-              <SpotifyTrack {...track} />
-            </li>
-          ))}
-        </ol>
+        <TracksList
+          tracks={tracks}
+          className="spotify-playlist-tracks-list mt-1 width-full"
+        />
       </div>
     )
   }
