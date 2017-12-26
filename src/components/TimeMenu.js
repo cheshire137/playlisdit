@@ -39,7 +39,7 @@ class TimeMenu extends Component {
             aria-controls="section-menu"
             onClick={() => this.toggleOpen()}
           >
-            <span>Time frame: {times[activeTime]}</span>
+            <span>{times[activeTime]}</span>
             <span className="icon is-small">
               <i className="ion-arrow-down-b" aria-hidden="true" />
             </span>
