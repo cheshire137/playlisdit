@@ -23,6 +23,31 @@ class SpotifyAPI extends Fetcher {
     super('https://api.spotify.com')
   }
 
+  async search(query, type, limit, offset) {
+    let path = `/v1/search?q=${encodeURIComponent(query)}` +
+      `&type=${type}`
+    if (typeof limit === 'number') {
+      path += `&limit=${limit}`
+    }
+    if (typeof offset === 'number') {
+      path += `&offset=${offset}`
+    }
+    const resp = await this.get(path)
+    if (type === 'album') {
+      return resp.albums
+    }
+    if (type === 'artist') {
+      return resp.artists
+    }
+    if (type === 'playlist') {
+      return resp.playlists
+    }
+    if (type === 'track') {
+      return resp.tracks
+    }
+    return resp
+  }
+
   async tracks(ids) {
     const idsStr = ids.join(',')
     const headers = {
