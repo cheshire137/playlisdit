@@ -61,24 +61,25 @@ class PlaylistView extends Component {
     const playlistIDs = []
 
     for (const post of posts) {
-      const url = post.url.toLowerCase()
+      const url = post.url
+      const lowercaseUrl = url.toLowerCase()
 
-      if (url.indexOf('/playlist/') > -1) {
-        const parts = url.split('/playlist/')
+      if (lowercaseUrl.indexOf('/playlist/') > -1) {
+        const parts = url.split(/\/playlist\//i)
         const head = parts[0].split('/user/')
         const id = parts[parts.length - 1].split('?')[0]
         const user = head[head.length - 1]
         playlistIDs.push({ user, id })
         result[url] = { type: 'playlist', id, user }
 
-      } else if (url.indexOf('/track/') > -1) {
-        const parts = url.split('/track/')
+      } else if (lowercaseUrl.indexOf('/track/') > -1) {
+        const parts = url.split(/\/track\//i)
         const id = parts[parts.length - 1].split('?')[0]
         trackIDs.push(id)
         result[url] = { type: 'track', id }
 
-      } else if (url.indexOf('/album/') > -1) {
-        const parts = url.split('/album/')
+      } else if (lowercaseUrl.indexOf('/album/') > -1) {
+        const parts = url.split(/\/album\//i)
         const id = parts[parts.length - 1].split('?')[0]
         albumIDs.push(id)
         result[url] = { type: 'album', id }
