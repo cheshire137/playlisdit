@@ -33,3 +33,16 @@
 .dropdown-menu {
   min-width: 5em;
 }
+
+.spotify-artist-link {
+  + .spotify-artist-link {
+    &::before {
+      content: ", ";
+    }
+  }
+}
+
+.spotify-playlist-tracks-list {
+  max-height: 7.4em;
+  overflow-y: auto;
+}

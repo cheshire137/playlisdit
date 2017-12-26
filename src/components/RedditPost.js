@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ExternalLink from './ExternalLink'
+import SpotifyPlaylist from './SpotifyPlaylist'
 
 class RedditPost extends Component {
   getThumbnailUrl() {
@@ -15,7 +16,8 @@ class RedditPost extends Component {
   }
 
   render() {
-    const { title, permalink, url } = this.props
+    const { title, permalink, url, spotifyInfo } = this.props
+    console.log(title, spotifyInfo)
     const redditPostUrl = `https://www.reddit.com${permalink}`
     const thumbnailUrl = this.getThumbnailUrl()
     const linkStyle = {}
@@ -35,15 +37,23 @@ class RedditPost extends Component {
             alt={`${title} thumbnail`}
           /></ExternalLink>
         ) : ''}
-        <h3>
-          <ExternalLink
-            url={redditPostUrl}
-          >{title}</ExternalLink>
-        </h3>
         <div>
-          <ExternalLink
-            url={url}
-          >Spotify</ExternalLink>
+          <h3>
+            <ExternalLink
+              url={redditPostUrl}
+            >{title}</ExternalLink>
+          </h3>
+          {spotifyInfo ? (
+            <div>
+              {spotifyInfo.type === 'playlist' ? (
+                <SpotifyPlaylist {...spotifyInfo} />
+              ) : spotifyInfo.type}
+            </div>
+          ) : (
+            <ExternalLink
+              url={url}
+            >Spotify</ExternalLink>
+          )}
         </div>
       </div>
     )

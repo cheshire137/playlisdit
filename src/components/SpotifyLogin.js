@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Header from './Header'
-import LocalStorage from '../models/LocalStorage'
 import Config from '../config.json'
 import SpotifyAPI from '../models/SpotifyAPI'
 import { Redirect } from 'react-router-dom'
