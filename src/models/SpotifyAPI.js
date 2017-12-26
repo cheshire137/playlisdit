@@ -15,14 +15,34 @@ class SpotifyAPI extends Fetcher {
     LocalStorage.delete('spotifyToken')
   }
 
+  static token() {
+    return LocalStorage.get('spotifyToken')
+  }
+
   constructor(username) {
     super('https://api.spotify.com')
   }
 
   async tracks(ids) {
     const idsStr = ids.join(',')
-    const resp = await this.get(`/v1/tracks?ids=${idsStr}`)
+    const headers = {
+      Authorization: `Bearer ${SpotifyAPI.token()}`
+    }
+    const resp = await this.get(`/v1/tracks?ids=${idsStr}`, headers)
     return resp.tracks
+  }
+
+  async albums(ids) {
+    const idsStr = ids.join(',')
+    const headers = {
+      Authorization: `Bearer ${SpotifyAPI.token()}`
+    }
+    const resp = await this.get(`/v1/albums?ids=${idsStr}`, headers)
+    return resp.albums
+  }
+
+  playlist(user, id) {
+    return this.get(`/v1/users/${user}/playlists/${id}`)
   }
 }
 
