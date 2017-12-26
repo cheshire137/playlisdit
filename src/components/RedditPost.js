@@ -3,6 +3,7 @@ import ExternalLink from './ExternalLink'
 import SpotifyPlaylist from './SpotifyPlaylist'
 import SpotifyTrack from './SpotifyTrack'
 import SpotifyAlbum from './SpotifyAlbum'
+import RedditLogo from './RedditLogo'
 
 class RedditPost extends Component {
   getThumbnailUrl() {
@@ -19,7 +20,6 @@ class RedditPost extends Component {
 
   render() {
     const { title, permalink, url, spotifyInfo } = this.props
-    console.log(title, spotifyInfo)
     const redditPostUrl = `https://www.reddit.com${permalink}`
     const thumbnailUrl = this.getThumbnailUrl()
     const linkStyle = {}
@@ -43,7 +43,10 @@ class RedditPost extends Component {
           <h3>
             <ExternalLink
               url={redditPostUrl}
-            >{title}</ExternalLink>
+            >
+              <RedditLogo fill="#3675d9" className="mr-1" />
+              <span>{title}</span>
+            </ExternalLink>
           </h3>
           {spotifyInfo ? (
             <div>
