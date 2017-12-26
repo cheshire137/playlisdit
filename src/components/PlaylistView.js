@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import RedditAPI from '../models/RedditAPI'
 import SpotifyAPI from '../models/SpotifyAPI'
 import RedditPost from './RedditPost'
@@ -26,11 +27,26 @@ class PlaylistView extends Component {
     this.setState(prevState => ({ time }), () => this.fetchPosts())
   }
 
+  signOut() {
+    SpotifyAPI.signOut()
+    this.props.history.push('/')
+  }
+
   async fetchPosts() {
     const { section, time } = this.state
-    const posts = await this.redditAPI.spotifyPosts({
-      section, time
-    })
+    let posts
+    try {
+      posts = await this.redditAPI.spotifyPosts({
+        section, time
+      })
+    } catch (error) {
+      console.error('failed to fetch Spotify posts from Reddit', error)
+    }
+
+    if (!posts) {
+      return
+    }
+
     this.setState(prevState => ({ posts }))
 
     const spotifyInfo = await this.getSpotifyInfo()
@@ -70,8 +86,17 @@ class PlaylistView extends Component {
     }
 
     if (trackIDs.length > 0) {
-      const tracks = await this.spotifyAPI.tracks(trackIDs)
-      console.log('tracks', tracks)
+      let tracks
+      try {
+        tracks = await this.spotifyAPI.tracks(trackIDs)
+        console.log('tracks', tracks)
+      } catch (error) {
+        console.error('failed to fetch Spotify tracks', error)
+        if (error.response.status === 401) {
+          this.signOut()
+          return
+        }
+      }
     }
 
     if (albumIDs.length > 0) {
@@ -83,7 +108,7 @@ class PlaylistView extends Component {
       for (const playlistID of playlistIDs) {
         this.spotifyAPI.playlist(playlistID.user, playlistID.id).then(playlist => {
           console.log('playlist', playlist)
-        })
+        }).catch(err => console.error('failed to fetch playlist', err))
       }
     }
 
@@ -130,4 +155,4 @@ class PlaylistView extends Component {
   }
 }
 
-export default PlaylistView
+export default withRouter(PlaylistView)
