@@ -50,6 +50,14 @@
   color: #ff4500;
 }
 
+.reddit-icon,
+.spotify-icon {
+  width: 16px;
+  vertical-align: middle;
+  margin-top: -3px;
+  height: 16px;
+}
+
 .tracks-list {
   .spotify-track {
     .spotify-icon {
