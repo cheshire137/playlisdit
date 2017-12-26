@@ -18,7 +18,7 @@ class RedditAPI extends Fetcher {
       section = `/${opts.section}`
     }
     let path = `/domain/${opts.domain}${section}.json`
-    if (opts.time) {
+    if (opts.time && opts.section === 'top') {
       path += `?t=${opts.time}`
     }
     const resp = await this.get(path)
