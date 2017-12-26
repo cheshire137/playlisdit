@@ -46,10 +46,24 @@
   color: #2ab858;
 }
 
+.reddit-link {
+  color: #ff4500;
+}
+
 .tracks-list {
   .spotify-track {
     .spotify-icon {
       display: none;
     }
   }
+}
+
+.icon svg {
+  fill: currentColor;
+  display: inline-block;
+  vertical-align: text-bottom;
+}
+
+svg:not(:root) {
+  overflow: hidden;
 }

@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 
 class RedditLogo extends Component {
   render() {
-    const { className } = this.props
-    const fill = this.props.fill || '#3675d9'
+    const { className, fill } = this.props
 
     return (
       <span className={`icon reddit-icon ${className}`}>

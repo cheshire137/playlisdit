@@ -44,6 +44,7 @@ class RedditPost extends Component {
           <h3>
             <ExternalLink
               url={redditPostUrl}
+              className="reddit-link"
             >
               <RedditLogo className="mr-1" />
               <span>{title}</span>
@@ -54,7 +55,7 @@ class RedditPost extends Component {
               {spotifyInfo.type === 'playlist' ? (
                 <SpotifyPlaylist {...spotifyInfo} />
               ) : spotifyInfo.type === 'track' ? (
-                <SpotifyTrack {...spotifyInfo} />
+                <SpotifyTrack {...spotifyInfo} className="spotify-link" />
               ) : spotifyInfo.type === 'album' ? (
                 <SpotifyAlbum {...spotifyInfo} />
               ) : spotifyInfo.type}

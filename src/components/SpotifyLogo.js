@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 
 class SpotifyLogo extends Component {
   render() {
-    const { className } = this.props
-    const fill = this.props.fill || '#2ab858'
+    const { className, fill } = this.props
 
     return (
       <span className={`icon spotify-icon ${className}`}>
