@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
+import NumberHelper from '../models/NumberHelper'
 
 class TrackCount extends Component {
   render() {
-    const { count } = this.props
+    const { count, type } = this.props
 
     return (
       <span className="track-count">
-        {count} track{count === 1 ? '' : 's'}
+        {type} &middot; {NumberHelper.format(count)} track{count === 1 ? '' : 's'}
       </span>
     )
   }

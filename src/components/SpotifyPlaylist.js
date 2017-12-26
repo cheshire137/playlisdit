@@ -20,7 +20,7 @@ class SpotifyPlaylist extends Component {
           >
             <SpotifyLogo className="mr-1" />
             {name}
-            <TrackCount count={trackCount} />
+            <TrackCount type="playlist" count={trackCount} />
           </ExternalLink>
         </p>
         <TracksList

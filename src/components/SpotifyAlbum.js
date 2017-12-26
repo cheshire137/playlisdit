@@ -26,7 +26,7 @@ class SpotifyAlbum extends Component {
           {artists.map(artist => (
             <SpotifyArtist {...artist} key={artist.id} />
           ))}
-          <TrackCount count={trackCount} />
+          <TrackCount type="album" count={trackCount} />
         </p>
         <TracksList
           artistIDs={artists.map(artist => artist.id).sort()}
