@@ -18,8 +18,20 @@ class SpotifyAPI extends Fetcher {
     return LocalStorage.get('spotifyToken')
   }
 
-  constructor(username) {
+  constructor() {
     super('https://api.spotify.com')
+  }
+
+  async me() {
+    const headers = {
+      Authorization: `Bearer ${SpotifyAPI.token()}`
+    }
+    const profile = await this.get('/v1/me', headers)
+    if (profile.images && profile.images.length > 0) {
+      profile.imageUrl = profile.images[0].url
+    }
+    profile.url = profile.external_urls.spotify
+    return profile
   }
 
   async search(query, type, limit, offset) {
