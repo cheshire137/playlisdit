@@ -21,6 +21,54 @@ const getActiveSubreddits = subreddits => {
   return subreddits.filter(subreddit => deselectedSubreddits.indexOf(subreddit) < 0)
 }
 
+const getPlaylistDescription = subreddits => {
+
+  const attribution = 'Made by Playlisdit.'
+  if (subreddits.length < 1) {
+    return attribution
+  }
+
+  const subredditList = subreddits.join(', ')
+  const unit = subreddits.length === 1 ? 'subreddit' : 'subreddits'
+  return `Songs from Reddit's ${subredditList} ${unit}. ${attribution}`
+}
+
+const getPlaylistName = (section, time) => {
+  let name = ''
+  if (section === 'hot') {
+    name += 'Hot'
+  } else if (section === 'top') {
+    name += 'Top'
+  } else if (section === 'rising') {
+    name += 'Rising'
+  } else if (section === 'controversial') {
+    name += 'Controversial'
+  } else if (section === 'new') {
+    name += 'New'
+  }
+  name += ' Reddit Posts'
+  if (section === 'top') {
+    name += ' from '
+    if (time === 'hour') {
+      name += 'the Past Hour'
+    } else if (time === 'day') {
+      name += 'the Past 24 Hours'
+    } else if (time === 'week') {
+      name += 'the Past Week'
+    } else if (time === 'month') {
+      name += 'the Past Month'
+    } else if (time === 'year') {
+      name += 'the Past Year'
+    } else if (time === 'all') {
+      name += 'All Time'
+    }
+  }
+  const date = new Date()
+  const timestamp = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+  name += ` - ${timestamp}`
+  return name
+}
+
 const getSubreddits = posts => {
   const result = []
   if (!posts || posts.length < 1) {
@@ -43,6 +91,7 @@ class PlaylistView extends Component {
       posts: null,
       spotifyInfo: {},
       activeSubreddits: [],
+      isSaving: false,
       time: props.match.params.time || 'day',
       section: props.match.params.section || 'top'
     }
@@ -232,9 +281,21 @@ class PlaylistView extends Component {
     return counts.reduce((acc, val) => acc + val)
   }
 
+  async savePlaylist() {
+    const { spotifyInfo, section, time, activeSubreddits } = this.state
+    console.log(Object.values(spotifyInfo))
+    this.setState(prevState => ({ isSaving: true }))
+    const name = getPlaylistName(section, time)
+    const description = getPlaylistDescription(activeSubreddits)
+    const api = new SpotifyAPI()
+    const profile = await api.me()
+    const user = profile.id
+    const playlist = await api.createPlaylist(user, name, description)
+    console.log(playlist)
+  }
+
   render() {
-    const { posts, section, time, spotifyInfo, activeSubreddits,
-            subreddits } = this.state
+    const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving } = this.state
     let filteredPosts = []
     if (posts) {
       filteredPosts = posts.filter(post => activeSubreddits.indexOf(post.subreddit) > -1)
@@ -249,6 +310,9 @@ class PlaylistView extends Component {
             {posts ? (
               <div>
                 <Filters
+                  isSaving={isSaving}
+                  allowSave={!isSaving && Object.keys(spotifyInfo).length > 0}
+                  savePlaylist={() => this.savePlaylist()}
                   trackCount={trackCount}
                   activeSection={section}
                   activeTime={time}

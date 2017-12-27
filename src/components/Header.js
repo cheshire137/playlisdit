@@ -19,7 +19,6 @@ class Header extends Component {
   async fetchSpotifyProfile() {
     const api = new SpotifyAPI()
     const spotifyProfile = await api.me()
-    console.log(spotifyProfile)
     this.setState(prevState => ({ spotifyProfile }))
   }
 

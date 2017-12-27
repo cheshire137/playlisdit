@@ -8,20 +8,37 @@ class Filters extends Component {
   render() {
     const { activeSection, activeTime, chooseSection, chooseTime,
             trackCount, subreddits, activeSubreddits,
-            chooseSubreddits } = this.props
+            chooseSubreddits, allowSave, isSaving } = this.props
     const trackUnit = trackCount === 1 ? 'track' : 'tracks'
 
     return (
       <div className="d-flex flex-items-center flex-justify-between mb-4">
-        <h2 className="subtitle mb-0">
-          <span>Spotify Posts on Reddit</span>
-          <span className="is-size-6 ml-2 text-gray">
-            {typeof trackCount === 'number' ? (
-              <span>{NumberHelper.format(trackCount)} {trackUnit} </span>
-            ) : ''}
-          </span>
-        </h2>
-        <div>
+        <div className="d-flex flex-items-center">
+          <h2 className="subtitle mb-0">
+            <span>Spotify Posts on Reddit</span>
+            <span className="is-size-6 ml-3 text-gray">
+              {typeof trackCount === 'number' ? (
+                <span>{NumberHelper.format(trackCount)} {trackUnit} </span>
+              ) : ''}
+            </span>
+          </h2>
+          {isSaving ? (
+            <span
+              className="ml-3 d-inline-block"
+            >Saving...</span>
+          ) : ''}
+          {allowSave ? (
+            <button
+              type="button"
+              onClick={this.props.savePlaylist}
+              className="button ml-3 is-primary"
+            >Save playlist</button>
+          ) : ''}
+        </div>
+        <div className="d-flex flex-items-center">
+          <span
+            className="mr-3"
+          >Filters:</span>
           {subreddits.length > 0 ? (
             <SubredditMenu
               subreddits={subreddits}
