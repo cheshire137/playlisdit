@@ -13,11 +13,16 @@ class Header extends Component {
       <section className="hero is-link">
         <div className="hero-body">
           <div className="container d-flex flex-items-center flex-justify-between">
-            <h1 className="title mb-0">
-              <a
-                href="/"
-              >Playlisdit</a>
-            </h1>
+            <div>
+              <h1 className="title">
+                <a
+                  href="/"
+                >Playlisdit</a>
+              </h1>
+              <h2 className="subtitle">
+                Create Spotify playlists from songs posted on Reddit.
+              </h2>
+            </div>
             {SpotifyAPI.isAuthenticated() ? (
               <button
                 type="button"
