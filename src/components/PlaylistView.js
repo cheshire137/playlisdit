@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import RedditAPI from '../models/RedditAPI'
+import LocalStorage from '../models/LocalStorage'
 import SpotifyAPI from '../models/SpotifyAPI'
 import RedditPost from './RedditPost'
 import Filters from './Filters'
@@ -57,6 +58,23 @@ class PlaylistView extends Component {
   }
 
   chooseSubreddits(activeSubreddits) {
+    const allSubreddits = this.state.subreddits
+    const currentDeselectedSubreddits = allSubreddits.filter(subreddit => activeSubreddits.indexOf(subreddit) < 0)
+    const pastDeselectedSubreddits = LocalStorage.get('deselectedSubreddits') || []
+    const newDeselectedSubreddits = []
+    for (const subreddit of pastDeselectedSubreddits) {
+      const isDeselected = activeSubreddits.indexOf(subreddit) < 0
+      const isAvailable = allSubreddits.indexOf(subreddit) > -1
+      if (isDeselected && isAvailable) {
+        newDeselectedSubreddits.push(subreddit)
+      }
+    }
+    for (const subreddit of currentDeselectedSubreddits) {
+      if (newDeselectedSubreddits.indexOf(subreddit) < 0) {
+        newDeselectedSubreddits.push(subreddit)
+      }
+    }
+    LocalStorage.set('deselectedSubreddits', newDeselectedSubreddits)
     this.setState(prevState => ({ activeSubreddits }))
   }
 
@@ -89,7 +107,15 @@ class PlaylistView extends Component {
     }
 
     const subreddits = getSubreddits(posts)
-    this.setState(prevState => ({ posts, subreddits, activeSubreddits: subreddits }))
+    const activeSubreddits = []
+    const deselectedSubreddits = LocalStorage.get('deselectedSubreddits') || []
+    for (const subreddit of subreddits) {
+      if (deselectedSubreddits.indexOf(subreddit) < 0) {
+        activeSubreddits.push(subreddit)
+      }
+    }
+
+    this.setState(prevState => ({ posts, subreddits, activeSubreddits }))
 
     const spotifyInfo = await this.getSpotifyInfo()
     this.setState(prevState => ({ spotifyInfo }))

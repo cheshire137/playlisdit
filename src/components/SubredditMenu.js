@@ -36,7 +36,7 @@ class SubredditMenu extends Component {
   render() {
     const { isOpen, activeSubreddits } = this.state
     const { subreddits } = this.props
-    const unit = activeSubreddits.length === 1 ? 'subreddit' : 'subreddits'
+    const unit = subreddits.length === 1 ? 'subreddit' : 'subreddits'
 
     return (
       <div className={`dropdown mr-3 ${isOpen ? 'is-active' : ''}`}>
@@ -47,7 +47,7 @@ class SubredditMenu extends Component {
             aria-controls="section-menu"
             onClick={() => this.toggleOpen()}
           >
-            <span>{activeSubreddits.length} {unit}</span>
+            <span>{activeSubreddits.length} of {subreddits.length} {unit}</span>
             <span className="icon is-small">
               <i className="ion-arrow-down-b" aria-hidden="true" />
             </span>
@@ -68,7 +68,7 @@ class SubredditMenu extends Component {
                   <input
                     checked={isActive}
                     type="checkbox"
-                    className="mr-1"
+                    className="mr-2"
                     id={domID}
                     onChange={() => this.toggleSubredditSelected(subreddit)}
                   />

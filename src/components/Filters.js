@@ -10,18 +10,15 @@ class Filters extends Component {
             trackCount, subreddits, activeSubreddits,
             chooseSubreddits } = this.props
     const trackUnit = trackCount === 1 ? 'track' : 'tracks'
-    const subredditCount = activeSubreddits.length
-    const subredditUnit = subredditCount === 1 ? 'subreddit' : 'subreddits'
 
     return (
       <div className="d-flex flex-items-center flex-justify-between mb-4">
         <h2 className="subtitle mb-0">
-          <span>Spotify Posts on Reddit </span>
-          <span className="is-size-6 text-gray">
+          <span>Spotify Posts on Reddit</span>
+          <span className="is-size-6 ml-2 text-gray">
             {typeof trackCount === 'number' ? (
               <span>{NumberHelper.format(trackCount)} {trackUnit} </span>
             ) : ''}
-            <span>from {NumberHelper.format(subredditCount)} {subredditUnit}</span>
           </span>
         </h2>
         <div>
