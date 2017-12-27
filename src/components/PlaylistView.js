@@ -16,6 +16,11 @@ const caseInsensitiveCompare = (a, b) => {
   return lowerA > lowerB ? 1 : 0
 }
 
+const getActiveSubreddits = subreddits => {
+  const deselectedSubreddits = LocalStorage.get('deselectedSubreddits') || []
+  return subreddits.filter(subreddit => deselectedSubreddits.indexOf(subreddit) < 0)
+}
+
 const getSubreddits = posts => {
   const result = []
   if (!posts || posts.length < 1) {
@@ -50,11 +55,11 @@ class PlaylistView extends Component {
     const { section, time } = params
     this.setState(prevState => ({
       section: section || 'top', time: time || 'day'
-    }), () => this.fetchPosts())
+    }), () => this.fetchRedditPosts())
   }
 
   componentDidMount() {
-    this.fetchPosts()
+    this.fetchRedditPosts()
   }
 
   chooseSubreddits(activeSubreddits) {
@@ -94,30 +99,23 @@ class PlaylistView extends Component {
     this.props.history.push('/')
   }
 
-  async fetchPosts() {
+  async fetchRedditPosts() {
     const { section, time } = this.state
+
     let posts
     try {
       posts = await this.redditAPI.spotifyPosts({
-        section, time
+        section, time, limit: 10
       })
     } catch (error) {
       console.error('failed to fetch Spotify posts from Reddit', error)
     }
-
     if (!posts) {
       return
     }
 
     const subreddits = getSubreddits(posts)
-    const activeSubreddits = []
-    const deselectedSubreddits = LocalStorage.get('deselectedSubreddits') || []
-    for (const subreddit of subreddits) {
-      if (deselectedSubreddits.indexOf(subreddit) < 0) {
-        activeSubreddits.push(subreddit)
-      }
-    }
-
+    const activeSubreddits = getActiveSubreddits(subreddits)
     this.setState(prevState => ({ posts, subreddits, activeSubreddits }))
 
     const spotifyInfo = await this.getSpotifyInfo()
