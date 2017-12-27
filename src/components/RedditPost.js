@@ -21,9 +21,8 @@ class RedditPost extends Component {
   }
 
   render() {
-    const { title, permalink, url, spotifyInfo, created, score,
-            commentsUrl, subreddit, subredditUrl, commentCount,
-            date, scoreUnit, commentUnit } = this.props
+    const { title, url, spotifyInfo, score, commentsUrl, subreddit,
+            subredditUrl, commentCount, date, scoreUnit, commentUnit } = this.props
     const thumbnailUrl = this.getThumbnailUrl()
     const linkStyle = {}
     if (thumbnailUrl) {

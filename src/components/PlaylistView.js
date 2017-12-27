@@ -62,18 +62,21 @@ class PlaylistView extends Component {
     const currentDeselectedSubreddits = allSubreddits.filter(subreddit => activeSubreddits.indexOf(subreddit) < 0)
     const pastDeselectedSubreddits = LocalStorage.get('deselectedSubreddits') || []
     const newDeselectedSubreddits = []
+
     for (const subreddit of pastDeselectedSubreddits) {
       const isDeselected = activeSubreddits.indexOf(subreddit) < 0
       const isAvailable = allSubreddits.indexOf(subreddit) > -1
-      if (isDeselected && isAvailable) {
+      if (isDeselected && isAvailable || !isAvailable) {
         newDeselectedSubreddits.push(subreddit)
       }
     }
+
     for (const subreddit of currentDeselectedSubreddits) {
       if (newDeselectedSubreddits.indexOf(subreddit) < 0) {
         newDeselectedSubreddits.push(subreddit)
       }
     }
+
     LocalStorage.set('deselectedSubreddits', newDeselectedSubreddits)
     this.setState(prevState => ({ activeSubreddits }))
   }
