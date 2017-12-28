@@ -285,7 +285,11 @@ class PlaylistView extends Component {
     this.setState(prevState => ({ isSaving: true, playlist: null }))
 
     const { spotifyInfo, section, time, activeSubreddits } = this.state
-    const content = Object.values(spotifyInfo)
+    const filteredPosts = this.filterPosts()
+    const content = []
+    for (const post of filteredPosts) {
+      content.push(spotifyInfo[post.pathname])
+    }
     const name = getPlaylistName(section, time)
     const description = getPlaylistDescription(activeSubreddits)
     const api = new SpotifyAPI()
@@ -346,13 +350,19 @@ class PlaylistView extends Component {
     this.setState(prevState => ({ isSaving: false, playlist }))
   }
 
-  render() {
-    const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
-            playlist } = this.state
+  filterPosts() {
+    const { posts, activeSubreddits } = this.state
     let filteredPosts = []
     if (posts) {
       filteredPosts = posts.filter(post => activeSubreddits.indexOf(post.subreddit) > -1)
     }
+    return filteredPosts
+  }
+
+  render() {
+    const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
+            playlist } = this.state
+    const filteredPosts = this.filterPosts()
     const trackCount = this.getTrackCount(filteredPosts)
 
     return (
