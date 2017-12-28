@@ -310,23 +310,32 @@ class PlaylistView extends Component {
 
     const seenAlbums = []
     const seenTracks = []
+    const seenPlaylists = []
 
     for (const item of content) {
       if (item.type === 'album' && seenAlbums.indexOf(item.id) < 0) {
-        seenAlbums.push(item.id)
         let resp
         try {
           resp = await api.addAlbumToPlaylist(user, playlist.id, item.id)
+          seenAlbums.push(item.id)
         } catch (error) {
           console.error('failed to add album to playlist', error)
         }
 
-      } else if (item.type === 'track' && seenTracks.indexOf(item.id) < 0) {
-        seenTracks.push(item.id)
+      } else if (item.type === 'playlist' && seenPlaylists.indexOf(item.id) < 0) {
+        let resp
+        try {
+          resp = await api.addPlaylistToPlaylist(user, playlist.id, item.owner.id, item.id)
+          seenPlaylists.push(item.id)
+        } catch (error) {
+          console.error('failed to add playlist to playlist', error)
+        }
 
+      } else if (item.type === 'track' && seenTracks.indexOf(item.id) < 0) {
         let resp
         try {
           resp = await api.addTrackToPlaylist(user, playlist.id, item.uri)
+          seenTracks.push(item.id)
         } catch (error) {
           console.error('failed to add track to playlist', error)
         }

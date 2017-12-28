@@ -53,6 +53,12 @@ class SpotifyAPI extends Fetcher {
     return this.addTracksToPlaylist(user, playlistID, [uri])
   }
 
+  async addPlaylistToPlaylist(destUser, destPlaylistID, srcUser, srcPlaylistID) {
+    const tracks = await this.getPlaylistTracks(srcUser, srcPlaylistID)
+    const uris = tracks.map(track => track.uri)
+    return this.addTracksToPlaylist(destUser, destPlaylistID, uris)
+  }
+
   async addAlbumToPlaylist(user, playlistID, albumID) {
     const tracks = await this.getAlbumTracks(albumID)
     const uris = tracks.map(track => track.uri)
@@ -69,17 +75,33 @@ class SpotifyAPI extends Fetcher {
     return this.post(path, headers, body)
   }
 
+  async getPlaylistTracks(user, playlistID, offset, tracks) {
+    const limit = 100
+    offset = typeof offset === 'number' ? offset : 0
+    const fields = encodeURIComponent('total,items(track(uri))')
+    const path = `/v1/users/${user}/playlists/${playlistID}/tracks?fields=${fields}`
+    const headers = {
+      Authorization: `Bearer ${SpotifyAPI.token()}`
+    }
+    const resp = await this.get(path, headers)
+    tracks = (tracks || []).concat(resp.items.map(item => item.track))
+    if (resp.total > limit + offset) {
+      const restOfTracks = await this.getPlaylistTracks(user, playlistID, offset + limit, tracks)
+      tracks = tracks.concat(restOfTracks)
+    }
+    return tracks
+  }
+
   async getAlbumTracks(albumID, offset, tracks) {
     const limit = 50
     offset = typeof offset === 'number' ? offset : 0
     const path = `/v1/albums/${albumID}/tracks?limit=${limit}&offset=${offset}`
-    console.log(path)
     const headers = {
       Authorization: `Bearer ${SpotifyAPI.token()}`
     }
     const resp = await this.get(path, headers)
     tracks = (tracks || []).concat(resp.items)
-    if (resp.total > limit) {
+    if (resp.total > limit + offset) {
       const restOfTracks = await this.getAlbumTracks(albumID, offset + limit, tracks)
       tracks = tracks.concat(restOfTracks)
     }
