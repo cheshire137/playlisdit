@@ -96,9 +96,8 @@ class SpotifyAPI extends Fetcher {
     const validTrackURIs = allTrackURIs.filter(uri => isValidTrackURI(uri))
     const uniqueTrackURIs = Array.from(new Set(validTrackURIs))
     for (const uris of eachSlice(uniqueTrackURIs, 100)) {
-      let resp
       try {
-        resp = await this.post(path, headers, { uris })
+        await this.post(path, headers, { uris })
       } catch (error) {
         console.error('failed to add tracks to playlist', error)
       }
