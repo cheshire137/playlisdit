@@ -176,10 +176,12 @@ class PlaylistView extends Component {
     const result = {}
     const trackIDs = []
     const albumIDs = []
+    const artistIDs = []
     const playlistIDs = []
     const postPathnamesByTrackID = {}
     const postPathnamesByAlbumID = {}
     const postPathnamesByPlaylistID = {}
+    const postPathnamesByArtistID = {}
 
     for (const post of posts) {
       const pathname = post.pathname
@@ -204,6 +206,15 @@ class PlaylistView extends Component {
         const id = parts[parts.length - 1].split('?')[0]
         albumIDs.push(id)
         postPathnamesByAlbumID[id] = pathname
+
+      } else if (lowercasePathname.indexOf('/artist/') > -1) {
+        const parts = pathname.split(/\/artist\//i)
+        const id = parts[parts.length - 1].split('?')[0]
+        artistIDs.push(id)
+        postPathnamesByArtistID[id] = pathname
+
+      } else {
+        console.log('unrecognized Spotify type', pathname)
       }
     }
 
@@ -234,6 +245,23 @@ class PlaylistView extends Component {
         }
       } catch (error) {
         console.error('failed to fetch Spotify albums', error)
+        if (error.response.status === 401) {
+          this.signOut()
+          return
+        }
+      }
+    }
+
+    if (artistIDs.length > 0) {
+      let artists
+      try {
+        artists = await this.spotifyAPI.artists(artistIDs)
+        for (const artist of artists) {
+          const pathname = postPathnamesByArtistID[artist.id]
+          result[pathname] = artist
+        }
+      } catch (error) {
+        console.error('failed to fetch Spotify artists', error)
         if (error.response.status === 401) {
           this.signOut()
           return
