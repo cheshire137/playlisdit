@@ -49,16 +49,22 @@ class SpotifyAPI extends Fetcher {
     return this.post(path, headers, body)
   }
 
+  async addTrackToPlaylist(user, playlistID, uri) {
+    return this.addTracksToPlaylist(user, playlistID, [uri])
+  }
+
   async addAlbumToPlaylist(user, playlistID, albumID) {
     const tracks = await this.getAlbumTracks(albumID)
     const uris = tracks.map(track => track.uri)
-    console.log(uris)
+    return this.addTracksToPlaylist(user, playlistID, uris)
+  }
+
+  addTracksToPlaylist(user, playlistID, uris) {
     const headers = {
       Authorization: `Bearer ${SpotifyAPI.token()}`,
       'Content-Type': 'application/json'
     }
     const path = `/v1/users/${user}/playlists/${playlistID}/tracks`
-    console.log(path)
     const body = { uris }
     return this.post(path, headers, body)
   }

@@ -281,8 +281,9 @@ class PlaylistView extends Component {
   }
 
   async savePlaylist() {
-    const { spotifyInfo, section, time, activeSubreddits } = this.state
     this.setState(prevState => ({ isSaving: true }))
+
+    const { spotifyInfo, section, time, activeSubreddits } = this.state
     const content = Object.values(spotifyInfo)
     const name = getPlaylistName(section, time)
     const description = getPlaylistDescription(activeSubreddits)
@@ -301,7 +302,6 @@ class PlaylistView extends Component {
     let playlist
     try {
       playlist = await api.createPlaylist(user, name, description)
-      console.log(playlist)
     } catch (error) {
       console.error('failed to create playlist', error)
       this.setState(prevState => ({ isSaving: false }))
@@ -309,13 +309,31 @@ class PlaylistView extends Component {
     }
 
     const seenAlbums = []
+    const seenTracks = []
+
     for (const item of content) {
       if (item.type === 'album' && seenAlbums.indexOf(item.id) < 0) {
         seenAlbums.push(item.id)
-        const resp = await api.addAlbumToPlaylist(user, playlist.id, item.id)
-        console.log('album added', resp, item)
+        let resp
+        try {
+          resp = await api.addAlbumToPlaylist(user, playlist.id, item.id)
+        } catch (error) {
+          console.error('failed to add album to playlist', error)
+        }
+
+      } else if (item.type === 'track' && seenTracks.indexOf(item.id) < 0) {
+        seenTracks.push(item.id)
+
+        let resp
+        try {
+          resp = await api.addTrackToPlaylist(user, playlist.id, item.uri)
+        } catch (error) {
+          console.error('failed to add track to playlist', error)
+        }
       }
     }
+
+    this.setState(prevState => ({ isSaving: false }))
   }
 
   render() {
