@@ -90,6 +90,7 @@ class PlaylistView extends Component {
       posts: null,
       spotifyInfo: {},
       activeSubreddits: [],
+      playlist: null,
       isSaving: false,
       time: props.match.params.time || 'day',
       section: props.match.params.section || 'top'
@@ -102,7 +103,7 @@ class PlaylistView extends Component {
     const params = props.match.params
     const { section, time } = params
     this.setState(prevState => ({
-      section: section || 'top', time: time || 'day'
+      section: section || 'top', time: time || 'day', playlist: null
     }), () => this.fetchRedditPosts())
   }
 
@@ -131,7 +132,7 @@ class PlaylistView extends Component {
     }
 
     LocalStorage.set('deselectedSubreddits', newDeselectedSubreddits)
-    this.setState(prevState => ({ activeSubreddits }))
+    this.setState(prevState => ({ activeSubreddits, playlist: null }))
   }
 
   chooseSection(section) {
@@ -164,7 +165,7 @@ class PlaylistView extends Component {
 
     const subreddits = getSubreddits(posts)
     const activeSubreddits = getActiveSubreddits(subreddits)
-    this.setState(prevState => ({ posts, subreddits, activeSubreddits }))
+    this.setState(prevState => ({ posts, subreddits, activeSubreddits, playlist: null }))
 
     const spotifyInfo = await this.getSpotifyInfo()
     this.setState(prevState => ({ spotifyInfo }))
@@ -281,7 +282,7 @@ class PlaylistView extends Component {
   }
 
   async savePlaylist() {
-    this.setState(prevState => ({ isSaving: true }))
+    this.setState(prevState => ({ isSaving: true, playlist: null }))
 
     const { spotifyInfo, section, time, activeSubreddits } = this.state
     const content = Object.values(spotifyInfo)
@@ -342,11 +343,12 @@ class PlaylistView extends Component {
       }
     }
 
-    this.setState(prevState => ({ isSaving: false }))
+    this.setState(prevState => ({ isSaving: false, playlist }))
   }
 
   render() {
-    const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving } = this.state
+    const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
+            playlist } = this.state
     let filteredPosts = []
     if (posts) {
       filteredPosts = posts.filter(post => activeSubreddits.indexOf(post.subreddit) > -1)
@@ -361,8 +363,9 @@ class PlaylistView extends Component {
             {posts ? (
               <div>
                 <Filters
+                  playlist={playlist}
                   isSaving={isSaving}
-                  allowSave={!isSaving && Object.keys(spotifyInfo).length > 0}
+                  allowSave={!isSaving && Object.keys(spotifyInfo).length > 0 && !playlist}
                   savePlaylist={() => this.savePlaylist()}
                   trackCount={trackCount}
                   activeSection={section}

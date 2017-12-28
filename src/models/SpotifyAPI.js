@@ -36,7 +36,7 @@ class SpotifyAPI extends Fetcher {
     return profile
   }
 
-  createPlaylist(user, name, description) {
+  async createPlaylist(user, name, description) {
     const headers = SpotifyAPI.authHeaders()
     headers['Content-Type'] = 'application/json'
     const body = {
@@ -46,7 +46,9 @@ class SpotifyAPI extends Fetcher {
       description
     }
     const path = `/v1/users/${user}/playlists`
-    return this.post(path, headers, body)
+    const playlist = await this.post(path, headers, body)
+    playlist.url = playlist.external_urls.spotify
+    return playlist
   }
 
   async addTrackToPlaylist(user, playlistID, uri) {

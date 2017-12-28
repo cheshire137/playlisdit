@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import SectionMenu from './SectionMenu'
+import ExternalLink from './ExternalLink'
 import TimeMenu from './TimeMenu'
 import SubredditMenu from './SubredditMenu'
+import SpotifyLogo from './SpotifyLogo'
 import NumberHelper from '../models/NumberHelper'
 
 class Filters extends Component {
   render() {
     const { activeSection, activeTime, chooseSection, chooseTime,
-            trackCount, subreddits, activeSubreddits,
+            trackCount, subreddits, activeSubreddits, playlist,
             chooseSubreddits, allowSave, isSaving } = this.props
     const trackUnit = trackCount === 1 ? 'track' : 'tracks'
 
@@ -22,9 +24,23 @@ class Filters extends Component {
               ) : ''}
             </span>
           </h2>
+          {playlist ? (
+            <h2
+              className="subtitle ml-3 mb-0"
+            >
+              <ExternalLink
+                url={playlist.url}
+                title={playlist.name}
+                className="spotify-link"
+              >
+                <SpotifyLogo className="mr-1" />
+                Created playlist!
+              </ExternalLink>
+            </h2>
+          ) : ''}
           {isSaving ? (
             <h2
-              className="subtitle ml-3"
+              className="subtitle ml-3 mb-0"
             >Saving...</h2>
           ) : ''}
           {allowSave ? (
