@@ -23,9 +23,9 @@ class Filters extends Component {
             </span>
           </h2>
           {isSaving ? (
-            <span
-              className="ml-3 d-inline-block"
-            >Saving...</span>
+            <h2
+              className="subtitle ml-3"
+            >Saving...</h2>
           ) : ''}
           {allowSave ? (
             <button

@@ -22,7 +22,6 @@ const getActiveSubreddits = subreddits => {
 }
 
 const getPlaylistDescription = subreddits => {
-
   const attribution = 'Made by Playlisdit.'
   if (subreddits.length < 1) {
     return attribution
@@ -283,15 +282,40 @@ class PlaylistView extends Component {
 
   async savePlaylist() {
     const { spotifyInfo, section, time, activeSubreddits } = this.state
-    console.log(Object.values(spotifyInfo))
     this.setState(prevState => ({ isSaving: true }))
+    const content = Object.values(spotifyInfo)
     const name = getPlaylistName(section, time)
     const description = getPlaylistDescription(activeSubreddits)
     const api = new SpotifyAPI()
-    const profile = await api.me()
+
+    let profile
+    try {
+      profile = await api.me()
+    } catch (error) {
+      console.error('failed to get Spotify profile', error)
+      this.setState(prevState => ({ isSaving: false }))
+      return
+    }
     const user = profile.id
-    const playlist = await api.createPlaylist(user, name, description)
-    console.log(playlist)
+
+    let playlist
+    try {
+      playlist = await api.createPlaylist(user, name, description)
+      console.log(playlist)
+    } catch (error) {
+      console.error('failed to create playlist', error)
+      this.setState(prevState => ({ isSaving: false }))
+      return
+    }
+
+    const seenAlbums = []
+    for (const item of content) {
+      if (item.type === 'album' && seenAlbums.indexOf(item.id) < 0) {
+        seenAlbums.push(item.id)
+        const resp = await api.addAlbumToPlaylist(user, playlist.id, item.id)
+        console.log('album added', resp, item)
+      }
+    }
   }
 
   render() {

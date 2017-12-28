@@ -45,9 +45,39 @@ class SpotifyAPI extends Fetcher {
       collaborative: false,
       description
     }
-    console.log(body, headers)
     const path = `/v1/users/${user}/playlists`
     return this.post(path, headers, body)
+  }
+
+  async addAlbumToPlaylist(user, playlistID, albumID) {
+    const tracks = await this.getAlbumTracks(albumID)
+    const uris = tracks.map(track => track.uri)
+    console.log(uris)
+    const headers = {
+      Authorization: `Bearer ${SpotifyAPI.token()}`,
+      'Content-Type': 'application/json'
+    }
+    const path = `/v1/users/${user}/playlists/${playlistID}/tracks`
+    console.log(path)
+    const body = { uris }
+    return this.post(path, headers, body)
+  }
+
+  async getAlbumTracks(albumID, offset, tracks) {
+    const limit = 50
+    offset = typeof offset === 'number' ? offset : 0
+    const path = `/v1/albums/${albumID}/tracks?limit=${limit}&offset=${offset}`
+    console.log(path)
+    const headers = {
+      Authorization: `Bearer ${SpotifyAPI.token()}`
+    }
+    const resp = await this.get(path, headers)
+    tracks = (tracks || []).concat(resp.items)
+    if (resp.total > limit) {
+      const restOfTracks = await this.getAlbumTracks(albumID, offset + limit, tracks)
+      tracks = tracks.concat(restOfTracks)
+    }
+    return tracks
   }
 
   async search(query, type, limit, offset) {
