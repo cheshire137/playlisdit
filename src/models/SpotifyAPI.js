@@ -111,7 +111,8 @@ class SpotifyAPI extends Fetcher {
     const path = `/v1/users/${user}/playlists/${playlistID}/tracks?limit=${limit}&offset=${offset}`
     const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(path, headers)
-    tracks = (tracks || []).concat(resp.items.map(item => item.track))
+    const newTracks = resp.items.map(item => item.track).filter(track => track && track.uri)
+    tracks = (tracks || []).concat(newTracks)
     if (resp.total > limit + offset) {
       const restOfTracks = await this.getPlaylistTracks(user, playlistID, offset + limit, tracks)
       tracks = tracks.concat(restOfTracks)
