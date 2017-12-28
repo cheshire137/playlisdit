@@ -14,10 +14,11 @@ const isValidTrackURI = uri => {
     return false
   }
   const parts = uri.split(':')
-  if (parts.length !== 3) {
+  if (parts.length < 3) {
     return false
   }
-  if (parts[0] !== 'spotify' && parts[1] !== 'track') {
+  // Exclude URIs like "spotify:local:Drake:Views:Controlla:245"
+  if (parts[0] !== 'spotify' || parts[1] !== 'track') {
     return false
   }
   return parts[2] !== 'null'
