@@ -18,14 +18,16 @@ class SpotifyAPI extends Fetcher {
     return LocalStorage.get('spotifyToken')
   }
 
+  static authHeaders() {
+    return { Authorization: `Bearer ${SpotifyAPI.token()}` }
+  }
+
   constructor() {
     super('https://api.spotify.com')
   }
 
   async me() {
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`
-    }
+    const headers = SpotifyAPI.authHeaders()
     const profile = await this.get('/v1/me', headers)
     if (profile.images && profile.images.length > 0) {
       profile.imageUrl = profile.images[0].url
@@ -35,10 +37,8 @@ class SpotifyAPI extends Fetcher {
   }
 
   createPlaylist(user, name, description) {
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`,
-      'Content-Type': 'application/json'
-    }
+    const headers = SpotifyAPI.authHeaders()
+    headers['Content-Type'] = 'application/json'
     const body = {
       name,
       public: true,
@@ -65,13 +65,12 @@ class SpotifyAPI extends Fetcher {
     return this.addTracksToPlaylist(user, playlistID, uris)
   }
 
-  addTracksToPlaylist(user, playlistID, uris) {
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`,
-      'Content-Type': 'application/json'
-    }
+  addTracksToPlaylist(user, playlistID, trackURIs) {
+    const headers = SpotifyAPI.authHeaders()
+    headers['Content-Type'] = 'application/json'
     const path = `/v1/users/${user}/playlists/${playlistID}/tracks`
-    const body = { uris }
+    const uniqueTrackURIs = Array.from(new Set(trackURIs))
+    const body = { uris: uniqueTrackURIs }
     return this.post(path, headers, body)
   }
 
@@ -80,9 +79,7 @@ class SpotifyAPI extends Fetcher {
     offset = typeof offset === 'number' ? offset : 0
     const fields = encodeURIComponent('total,items(track(uri))')
     const path = `/v1/users/${user}/playlists/${playlistID}/tracks?fields=${fields}`
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`
-    }
+    const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(path, headers)
     tracks = (tracks || []).concat(resp.items.map(item => item.track))
     if (resp.total > limit + offset) {
@@ -96,9 +93,7 @@ class SpotifyAPI extends Fetcher {
     const limit = 50
     offset = typeof offset === 'number' ? offset : 0
     const path = `/v1/albums/${albumID}/tracks?limit=${limit}&offset=${offset}`
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`
-    }
+    const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(path, headers)
     tracks = (tracks || []).concat(resp.items)
     if (resp.total > limit + offset) {
@@ -135,26 +130,20 @@ class SpotifyAPI extends Fetcher {
 
   async tracks(ids) {
     const idsStr = ids.join(',')
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`
-    }
+    const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(`/v1/tracks?ids=${encodeURIComponent(idsStr)}`, headers)
     return resp.tracks
   }
 
   async albums(ids) {
     const idsStr = ids.join(',')
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`
-    }
+    const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(`/v1/albums?ids=${encodeURIComponent(idsStr)}`, headers)
     return resp.albums
   }
 
   playlist(user, id) {
-    const headers = {
-      Authorization: `Bearer ${SpotifyAPI.token()}`
-    }
+    const headers = SpotifyAPI.authHeaders()
     return this.get(`/v1/users/${encodeURIComponent(user)}/playlists/${encodeURIComponent(id)}`, headers)
   }
 }
