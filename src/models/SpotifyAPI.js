@@ -1,6 +1,28 @@
 import Fetcher from './Fetcher'
 import LocalStorage from './LocalStorage'
 
+const eachSlice = (array, chunkSize) => {
+  const result = []
+  while (array.length > 0) {
+    result.push(array.splice(0, chunkSize))
+  }
+  return result
+}
+
+const isValidTrackURI = uri => {
+  if (typeof uri !== 'string') {
+    return false
+  }
+  const parts = uri.split(':')
+  if (parts.length !== 3) {
+    return false
+  }
+  if (parts[0] !== 'spotify' && parts[1] !== 'track') {
+    return false
+  }
+  return parts[2] !== 'null'
+}
+
 class SpotifyAPI extends Fetcher {
   static isAuthenticated() {
     return LocalStorage.has('spotifyToken')
@@ -67,13 +89,20 @@ class SpotifyAPI extends Fetcher {
     return this.addTracksToPlaylist(user, playlistID, uris)
   }
 
-  addTracksToPlaylist(user, playlistID, trackURIs) {
+  async addTracksToPlaylist(user, playlistID, allTrackURIs) {
     const headers = SpotifyAPI.authHeaders()
     headers['Content-Type'] = 'application/json'
     const path = `/v1/users/${user}/playlists/${playlistID}/tracks`
-    const uniqueTrackURIs = Array.from(new Set(trackURIs))
-    const body = { uris: uniqueTrackURIs }
-    return this.post(path, headers, body)
+    const validTrackURIs = allTrackURIs.filter(uri => isValidTrackURI(uri))
+    const uniqueTrackURIs = Array.from(new Set(validTrackURIs))
+    for (const uris of eachSlice(uniqueTrackURIs, 100)) {
+      let resp
+      try {
+        resp = await this.post(path, headers, { uris })
+      } catch (error) {
+        console.error('failed to add tracks to playlist', error)
+      }
+    }
   }
 
   async getPlaylistTracks(user, playlistID, offset, tracks) {
