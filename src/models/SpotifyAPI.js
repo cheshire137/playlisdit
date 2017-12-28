@@ -108,9 +108,7 @@ class SpotifyAPI extends Fetcher {
   async getPlaylistTracks(user, playlistID, offset, tracks) {
     const limit = 100
     offset = typeof offset === 'number' ? offset : 0
-    const fields = encodeURIComponent('total,items(track(uri))')
-    const path = `/v1/users/${user}/playlists/${playlistID}/tracks?fields=${fields}` +
-      `&limit=${limit}&offset=${offset}`
+    const path = `/v1/users/${user}/playlists/${playlistID}/tracks?limit=${limit}&offset=${offset}`
     const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(path, headers)
     tracks = (tracks || []).concat(resp.items.map(item => item.track))
