@@ -18,6 +18,9 @@ open http://localhost:3000/
 
 ## How to Deploy to Heroku
 
+Modify your Spotify app so it has your Heroku app's URL as a redirect URI, e.g.,
+`https://your-heroku-app.herokuapp.com/`.
+
 ```bash
 heroku git:remote -a your-heroku-app
 heroku buildpacks:add https://github.com/mars/create-react-app-buildpack.git
