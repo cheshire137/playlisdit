@@ -1,18 +1,13 @@
 import React, { Component } from 'react'
-import SectionMenu from './SectionMenu'
 import ExternalLink from './ExternalLink'
-import TimeMenu from './TimeMenu'
-import SubredditMenu from './SubredditMenu'
-import ItemTypeMenu from './ItemTypeMenu'
+import RedditFilters from './RedditFilters'
+import SpotifyFilters from './SpotifyFilters'
 import SpotifyLogo from './SpotifyLogo'
 import NumberHelper from '../models/NumberHelper'
 
 class Filters extends Component {
   render() {
-    const { activeSection, activeTime, chooseSection, chooseTime,
-            trackCount, subreddits, activeSubreddits, playlist,
-            chooseSubreddits, allowSave, isSaving, chooseItemTypes,
-            activeItemTypes, allowFilteringByItemType } = this.props
+    const { trackCount, playlist, allowSave, isSaving } = this.props
     const trackUnit = trackCount === 1 ? 'track' : 'tracks'
 
     return (
@@ -57,29 +52,22 @@ class Filters extends Component {
           <span
             className="mr-3"
           >Filters:</span>
-          {allowFilteringByItemType ? (
-            <ItemTypeMenu
-              activeItems={activeItemTypes}
-              chooseItems={chooseItemTypes}
-            />
-          ) : ''}
-          {subreddits.length > 0 ? (
-            <SubredditMenu
-              subreddits={subreddits}
-              activeItems={activeSubreddits}
-              chooseItems={chooseSubreddits}
-            />
-          ) : ''}
-          <SectionMenu
-            activeSection={activeSection}
-            chooseSection={chooseSection}
+
+          <SpotifyFilters
+            activeItemTypes={this.props.activeItemTypes}
+            chooseItemTypes={this.props.chooseItemTypes}
+            allowFilteringByItemType={this.props.allowFilteringByItemType}
           />
-          {activeSection === 'top' ? (
-            <TimeMenu
-              activeTime={activeTime}
-              chooseTime={chooseTime}
-            />
-          ) : ''}
+
+          <RedditFilters
+            subreddits={this.props.subreddits}
+            activeSubreddits={this.props.activeSubreddits}
+            activeSection={this.props.activeSection}
+            activeTime={this.props.activeTime}
+            chooseSubreddits={this.props.chooseSubreddits}
+            chooseSection={this.props.chooseSection}
+            chooseTime={this.props.chooseTime}
+          />
         </div>
       </div>
     )
