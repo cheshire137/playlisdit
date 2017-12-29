@@ -3,7 +3,7 @@ import ExternalLink from './ExternalLink'
 import SpotifyPlaylist from './SpotifyPlaylist'
 import SpotifyTrack from './SpotifyTrack'
 import SpotifyAlbum from './SpotifyAlbum'
-import SpotifyArtist from './SpotifyArtist'
+import SpotifyArtistAndTracks from './SpotifyArtistAndTracks'
 import RedditLogo from './RedditLogo'
 import SpotifyLogo from './SpotifyLogo'
 import NumberHelper from '../models/NumberHelper'
@@ -84,7 +84,7 @@ class RedditPost extends Component {
               ) : spotifyInfo.type === 'album' ? (
                 <SpotifyAlbum {...spotifyInfo} />
               ) : spotifyInfo.type === 'artist' ? (
-                <SpotifyArtist {...spotifyInfo} />
+                <SpotifyArtistAndTracks {...spotifyInfo} />
               ) : spotifyInfo.type}
             </div>
           ) : (

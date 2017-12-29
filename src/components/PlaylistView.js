@@ -205,6 +205,9 @@ class PlaylistView extends Component {
       if (item.type === 'album' || item.type === 'playlist') {
         return item.tracks.total
       }
+      if (item.type === 'artist') {
+        return item.tracks.length
+      }
       return 1
     })
     if (counts.length < 1) {
