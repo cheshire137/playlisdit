@@ -5,6 +5,7 @@ import LocalStorage from '../models/LocalStorage'
 import SpotifyAPI from '../models/SpotifyAPI'
 import RedditPost from './RedditPost'
 import Filters from './Filters'
+import PlaylistHeader from './PlaylistHeader'
 import Header from './Header'
 
 const caseInsensitiveCompare = (a, b) => {
@@ -417,13 +418,15 @@ class PlaylistView extends Component {
           <div className="container">
             {posts ? (
               <div>
-                <Filters
+                <PlaylistHeader
                   playlist={playlist}
                   isSaving={isSaving}
                   allowSave={!isSaving && anySpotifyInfo && !playlist}
-                  allowFilteringByItemType={anySpotifyInfo}
-                  savePlaylist={() => this.savePlaylist()}
                   trackCount={trackCount}
+                  savePlaylist={() => this.savePlaylist()}
+                />
+                <Filters
+                  allowFilteringByItemType={anySpotifyInfo}
                   activeSection={section}
                   activeTime={time}
                   subreddits={subreddits}

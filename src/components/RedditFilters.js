@@ -10,7 +10,9 @@ class RedditFilters extends Component {
             chooseTime } = this.props
 
     return (
-      <div>
+      <div className="d-flex flex-items-center">
+        <span className="mr-3">Reddit filters:</span>
+
         {subreddits.length > 0 ? (
           <SubredditMenu
             subreddits={subreddits}

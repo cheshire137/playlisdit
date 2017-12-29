@@ -6,7 +6,9 @@ class SpotifyFilters extends Component {
     const { activeItemTypes, chooseItemTypes, allowFilteringByItemType } = this.props
 
     return (
-      <div>
+      <div className="d-flex flex-items-center">
+        <span className="mr-3">Spotify filters:</span>
+
         {allowFilteringByItemType ? (
           <ItemTypeMenu
             activeItems={activeItemTypes}

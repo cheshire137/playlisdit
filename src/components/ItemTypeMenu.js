@@ -13,7 +13,7 @@ const itemTypeCount = itemTypeKeys.length
 class ItemTypeMenu extends Component {
   render() {
     const { activeItems, chooseItems } = this.props
-    const header = `${activeItems.length} of ${itemTypeCount} Spotify types`
+    const header = `${activeItems.length} of ${itemTypeCount} types`
 
     return (
       <MultiSelectMenu
