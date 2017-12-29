@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Redirect } from 'react-router-dom'
 import RedditAPI from '../models/RedditAPI'
 import LocalStorage from '../models/LocalStorage'
 import SpotifyAPI from '../models/SpotifyAPI'
@@ -143,11 +143,6 @@ class PlaylistView extends Component {
     this.props.history.push(`/playlist/top/${time}`)
   }
 
-  signOut() {
-    SpotifyAPI.signOut()
-    this.props.history.push('/')
-  }
-
   async fetchRedditPosts() {
     const { section, time } = this.state
 
@@ -229,7 +224,7 @@ class PlaylistView extends Component {
       } catch (error) {
         console.error('failed to fetch Spotify tracks', error)
         if (error.response.status === 401) {
-          this.signOut()
+          SpotifyAPI.signOut()
           return
         }
       }
@@ -246,7 +241,7 @@ class PlaylistView extends Component {
       } catch (error) {
         console.error('failed to fetch Spotify albums', error)
         if (error.response.status === 401) {
-          this.signOut()
+          SpotifyAPI.signOut()
           return
         }
       }
@@ -263,7 +258,7 @@ class PlaylistView extends Component {
       } catch (error) {
         console.error('failed to fetch Spotify artists', error)
         if (error.response.status === 401) {
-          this.signOut()
+          SpotifyAPI.signOut()
           return
         }
       }
@@ -279,7 +274,7 @@ class PlaylistView extends Component {
         } catch (error) {
           console.error('failed to fetch playlist', error)
           if (error.response.status === 401) {
-            this.signOut()
+            SpotifyAPI.signOut()
             return
           }
         }
@@ -385,6 +380,15 @@ class PlaylistView extends Component {
   }
 
   render() {
+    if (!SpotifyAPI.isAuthenticated()) {
+      return (
+        <Redirect to={{
+          pathname: '/',
+          state: { from: this.props.location }
+        }} />
+      )
+    }
+
     const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
             playlist } = this.state
     const filteredPosts = this.filterPosts()
