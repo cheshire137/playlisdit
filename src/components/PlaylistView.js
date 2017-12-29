@@ -449,6 +449,7 @@ class PlaylistView extends Component {
                   activeSection={section}
                   activeTime={time}
                   subreddits={subreddits}
+                  showSpotifyFilters={posts.length > 0}
                   activeItemTypes={activeItemTypes}
                   activeSubreddits={activeSubreddits}
                   chooseSubreddits={subs => this.chooseSubreddits(subs)}

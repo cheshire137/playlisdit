@@ -4,13 +4,17 @@ import SpotifyFilters from './SpotifyFilters'
 
 class Filters extends Component {
   render() {
+    const { showSpotifyFilters } = this.props
+
     return (
       <div className="d-flex flex-items-center flex-justify-between mb-4">
-        <SpotifyFilters
-          activeItemTypes={this.props.activeItemTypes}
-          chooseItemTypes={this.props.chooseItemTypes}
-          allowFilteringByItemType={this.props.allowFilteringByItemType}
-        />
+        {showSpotifyFilters ? (
+          <SpotifyFilters
+            activeItemTypes={this.props.activeItemTypes}
+            chooseItemTypes={this.props.chooseItemTypes}
+            allowFilteringByItemType={this.props.allowFilteringByItemType}
+          />
+        ) : <div />}
 
         <RedditFilters
           subreddits={this.props.subreddits}
