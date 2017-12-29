@@ -66,8 +66,8 @@ class Filters extends Component {
           {subreddits.length > 0 ? (
             <SubredditMenu
               subreddits={subreddits}
-              activeSubreddits={activeSubreddits}
-              chooseSubreddits={chooseSubreddits}
+              activeItems={activeSubreddits}
+              chooseItems={chooseSubreddits}
             />
           ) : ''}
           <SectionMenu

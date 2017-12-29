@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 class MultiSelectMenu extends Component {
   constructor(props) {
     super(props)
-    console.log('MultiSelectMenu', props)
     this.state = { isOpen: false, activeItems: props.activeItems }
   }
 
