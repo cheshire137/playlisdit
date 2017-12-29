@@ -25,21 +25,24 @@ const isValidTrackURI = uri => {
   return parts[2] !== 'null'
 }
 
+const tokenKey = 'spotifyToken'
+
 class SpotifyAPI extends Fetcher {
   static isAuthenticated() {
-    return LocalStorage.has('spotifyToken')
+    return LocalStorage.has(tokenKey)
   }
 
   static authenticate(token) {
-    LocalStorage.set('spotifyToken', token)
+    LocalStorage.set(tokenKey, token)
   }
 
   static signOut() {
-    LocalStorage.delete('spotifyToken')
+    LocalStorage.delete(tokenKey)
+    SpotifyProfile.delete()
   }
 
   static token() {
-    return LocalStorage.get('spotifyToken')
+    return LocalStorage.get(tokenKey)
   }
 
   static authHeaders() {
