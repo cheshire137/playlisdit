@@ -15,3 +15,11 @@ yarn install
 npm start
 open http://localhost:3000/
 ```
+
+## How to Deploy to Heroku
+
+```bash
+heroku git:remote -a your-heroku-app
+heroku buildpacks:add https://github.com/mars/create-react-app-buildpack.git
+git push heroku master
+```
