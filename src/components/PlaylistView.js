@@ -191,17 +191,56 @@ class PlaylistView extends Component {
     this.setState(prevState => ({ spotifyInfo }))
   }
 
+  async getSpotifyTracksByPostPathname() {
+    const trackIDs = []
+    const postPathnamesByTrackID = {}
+    const result = {}
+
+    for (const post of this.state.posts) {
+      const pathname = post.pathname
+      const lowercasePathname = pathname.toLowerCase()
+
+      if (lowercasePathname.indexOf('/track/') > -1) {
+        const parts = pathname.split(/\/track\//i)
+        const id = parts[parts.length - 1].split('?')[0]
+
+        trackIDs.push(id)
+        postPathnamesByTrackID[id] = pathname
+      }
+    }
+
+    if (trackIDs.length > 0) {
+      let tracks
+
+      try {
+        tracks = await this.spotifyAPI.tracks(trackIDs)
+
+        for (const track of tracks) {
+          const pathname = postPathnamesByTrackID[track.id]
+          result[pathname] = track
+        }
+      } catch (error) {
+        console.error('failed to fetch Spotify tracks', error)
+
+        if (error.response.status === 401) {
+          SpotifyAPI.signOut()
+        }
+      }
+    }
+
+    return result
+  }
+
   async getSpotifyInfo() {
     const { posts } = this.state
     const result = {}
-    const trackIDs = []
     const albumIDs = []
     const artistIDs = []
     const playlistIDs = []
-    const postPathnamesByTrackID = {}
     const postPathnamesByAlbumID = {}
     const postPathnamesByPlaylistID = {}
     const postPathnamesByArtistID = {}
+    const tracksByPostPathname = await this.getSpotifyTracksByPostPathname()
 
     for (const post of posts) {
       const pathname = post.pathname
@@ -214,12 +253,6 @@ class PlaylistView extends Component {
         const user = head[head.length - 1]
         playlistIDs.push({ user, id })
         postPathnamesByPlaylistID[id] = pathname
-
-      } else if (lowercasePathname.indexOf('/track/') > -1) {
-        const parts = pathname.split(/\/track\//i)
-        const id = parts[parts.length - 1].split('?')[0]
-        trackIDs.push(id)
-        postPathnamesByTrackID[id] = pathname
 
       } else if (lowercasePathname.indexOf('/album/') > -1) {
         const parts = pathname.split(/\/album\//i)
@@ -235,23 +268,6 @@ class PlaylistView extends Component {
 
       } else {
         console.log('unrecognized Spotify type', pathname)
-      }
-    }
-
-    if (trackIDs.length > 0) {
-      let tracks
-      try {
-        tracks = await this.spotifyAPI.tracks(trackIDs)
-        for (const track of tracks) {
-          const pathname = postPathnamesByTrackID[track.id]
-          result[pathname] = track
-        }
-      } catch (error) {
-        console.error('failed to fetch Spotify tracks', error)
-        if (error.response.status === 401) {
-          SpotifyAPI.signOut()
-          return
-        }
       }
     }
 
@@ -304,6 +320,10 @@ class PlaylistView extends Component {
           }
         }
       }
+    }
+
+    for (const pathname in tracksByPostPathname) {
+      result[pathname] = tracksByPostPathname[pathname]
     }
 
     return result
