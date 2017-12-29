@@ -3,6 +3,7 @@ import { withRouter, Redirect } from 'react-router-dom'
 import RedditAPI from '../models/RedditAPI'
 import LocalStorage from '../models/LocalStorage'
 import SpotifyAPI from '../models/SpotifyAPI'
+import SpotifyRedditPost from '../models/SpotifyRedditPost'
 import RedditPost from './RedditPost'
 import Filters from './Filters'
 import PlaylistHeader from './PlaylistHeader'
@@ -187,179 +188,9 @@ class PlaylistView extends Component {
     const activeSubreddits = getActiveSubreddits(subreddits)
     this.setState(prevState => ({ posts, subreddits, activeSubreddits, playlist: null }))
 
-    const spotifyInfo = await this.getSpotifyInfo()
+    const helper = new SpotifyRedditPost(this.state.posts)
+    const spotifyInfo = await helper.getSpotifyInfo()
     this.setState(prevState => ({ spotifyInfo }))
-  }
-
-  async getSpotifyTracksByPostPathname() {
-    const trackIDs = []
-    const postPathnamesByTrackID = {}
-    const result = {}
-
-    for (const post of this.state.posts) {
-      const pathname = post.pathname
-      const lowercasePathname = pathname.toLowerCase()
-
-      if (lowercasePathname.indexOf('/track/') > -1) {
-        const parts = pathname.split(/\/track\//i)
-        const id = parts[parts.length - 1].split('?')[0]
-
-        trackIDs.push(id)
-        postPathnamesByTrackID[id] = pathname
-      }
-    }
-
-    if (trackIDs.length > 0) {
-      let tracks
-
-      try {
-        tracks = await this.spotifyAPI.tracks(trackIDs)
-
-        for (const track of tracks) {
-          const pathname = postPathnamesByTrackID[track.id]
-          result[pathname] = track
-        }
-      } catch (error) {
-        console.error('failed to fetch Spotify tracks', error)
-
-        if (error.response.status === 401) {
-          SpotifyAPI.signOut()
-        }
-      }
-    }
-
-    return result
-  }
-
-  async getSpotifyAlbumsByPostPathname() {
-    const result = {}
-    const albumIDs = []
-    const postPathnamesByAlbumID = {}
-
-    for (const post of this.state.posts) {
-      const pathname = post.pathname
-      const lowercasePathname = pathname.toLowerCase()
-
-      if (lowercasePathname.indexOf('/album/') > -1) {
-        const parts = pathname.split(/\/album\//i)
-        const id = parts[parts.length - 1].split('?')[0]
-
-        albumIDs.push(id)
-        postPathnamesByAlbumID[id] = pathname
-      }
-    }
-
-    if (albumIDs.length > 0) {
-      let albums
-
-      try {
-        albums = await this.spotifyAPI.albums(albumIDs)
-
-        for (const album of albums) {
-          const pathname = postPathnamesByAlbumID[album.id]
-          result[pathname] = album
-        }
-      } catch (error) {
-        console.error('failed to fetch Spotify albums', error)
-
-        if (error.response.status === 401) {
-          SpotifyAPI.signOut()
-        }
-      }
-    }
-
-    return result
-  }
-
-  async getSpotifyArtistsByPostPathname() {
-    const result = {}
-    const artistIDs = []
-    const postPathnamesByArtistID = {}
-
-    for (const post of this.state.posts) {
-      const pathname = post.pathname
-      const lowercasePathname = pathname.toLowerCase()
-
-      if (lowercasePathname.indexOf('/artist/') > -1) {
-        const parts = pathname.split(/\/artist\//i)
-        const id = parts[parts.length - 1].split('?')[0]
-        artistIDs.push(id)
-        postPathnamesByArtistID[id] = pathname
-      }
-    }
-
-    if (artistIDs.length > 0) {
-      let artists
-
-      try {
-        artists = await this.spotifyAPI.artists(artistIDs)
-
-        for (const artist of artists) {
-          const pathname = postPathnamesByArtistID[artist.id]
-          result[pathname] = artist
-        }
-      } catch (error) {
-        console.error('failed to fetch Spotify artists', error)
-
-        if (error.response.status === 401) {
-          SpotifyAPI.signOut()
-        }
-      }
-    }
-
-    return result
-  }
-
-  async getSpotifyPlaylistsByPostPathname() {
-    const result = {}
-    const playlistIDs = []
-    const postPathnamesByPlaylistID = {}
-
-    for (const post of this.state.posts) {
-      const pathname = post.pathname
-      const lowercasePathname = pathname.toLowerCase()
-
-      if (lowercasePathname.indexOf('/playlist/') > -1) {
-        const parts = pathname.split(/\/playlist\//i)
-        const head = parts[0].split('/user/')
-        const id = parts[parts.length - 1].split('?')[0]
-        const user = head[head.length - 1]
-
-        playlistIDs.push({ user, id })
-        postPathnamesByPlaylistID[id] = pathname
-      }
-    }
-
-    if (playlistIDs.length > 0) {
-      for (const playlistID of playlistIDs) {
-        let playlist
-
-        try {
-          playlist = await this.spotifyAPI.playlist(playlistID.user, playlistID.id)
-
-          const pathname = postPathnamesByPlaylistID[playlist.id]
-          result[pathname] = playlist
-        } catch (error) {
-          console.error('failed to fetch playlist', error)
-
-          if (error.response.status === 401) {
-            SpotifyAPI.signOut()
-          }
-        }
-      }
-    }
-
-    return result
-  }
-
-  async getSpotifyInfo() {
-    const tracksByPostPathname = await this.getSpotifyTracksByPostPathname(),
-      albumsByPostPathname = await this.getSpotifyAlbumsByPostPathname(),
-      artistsByPostPathname = await this.getSpotifyArtistsByPostPathname(),
-      playlistsByPostPathname = await this.getSpotifyPlaylistsByPostPathname()
-
-    return Object.assign({}, tracksByPostPathname, albumsByPostPathname,
-                         artistsByPostPathname, playlistsByPostPathname)
   }
 
   getTrackCount(visiblePosts) {
@@ -393,11 +224,10 @@ class PlaylistView extends Component {
     }
     const name = getPlaylistName(section, time)
     const description = getPlaylistDescription(activeSubreddits)
-    const api = new SpotifyAPI()
 
     let profile
     try {
-      profile = await api.me()
+      profile = await this.spotifyAPI.me()
     } catch (error) {
       console.error('failed to get Spotify profile', error)
       this.setState(prevState => ({ isSaving: false }))
@@ -407,7 +237,7 @@ class PlaylistView extends Component {
 
     let playlist
     try {
-      playlist = await api.createPlaylist(user, name, description)
+      playlist = await this.spotifyAPI.createPlaylist(user, name, description)
     } catch (error) {
       console.error('failed to create playlist', error)
       this.setState(prevState => ({ isSaving: false }))
@@ -421,7 +251,7 @@ class PlaylistView extends Component {
     for (const item of content) {
       if (item.type === 'album' && seenAlbums.indexOf(item.id) < 0) {
         try {
-          await api.addAlbumToPlaylist(user, playlist.id, item.id)
+          await this.spotifyAPI.addAlbumToPlaylist(user, playlist.id, item.id)
           seenAlbums.push(item.id)
         } catch (error) {
           console.error('failed to add album to playlist', error)
@@ -429,7 +259,7 @@ class PlaylistView extends Component {
 
       } else if (item.type === 'playlist' && seenPlaylists.indexOf(item.id) < 0) {
         try {
-          await api.addPlaylistToPlaylist(user, playlist.id, item.owner.id, item.id)
+          await this.spotifyAPI.addPlaylistToPlaylist(user, playlist.id, item.owner.id, item.id)
           seenPlaylists.push(item.id)
         } catch (error) {
           console.error('failed to add playlist to playlist', error)
@@ -437,7 +267,7 @@ class PlaylistView extends Component {
 
       } else if (item.type === 'track' && seenTracks.indexOf(item.id) < 0) {
         try {
-          await api.addTrackToPlaylist(user, playlist.id, item.uri)
+          await this.spotifyAPI.addTrackToPlaylist(user, playlist.id, item.uri)
           seenTracks.push(item.id)
         } catch (error) {
           console.error('failed to add track to playlist', error)
@@ -482,6 +312,7 @@ class PlaylistView extends Component {
     const filteredPosts = this.filterPosts()
     const trackCount = this.getTrackCount(filteredPosts)
     const anySpotifyInfo = Object.keys(spotifyInfo).length > 0
+    const anyPosts = posts && posts.length > 0
 
     return (
       <div>
@@ -502,7 +333,7 @@ class PlaylistView extends Component {
                   activeSection={section}
                   activeTime={time}
                   subreddits={subreddits}
-                  showSpotifyFilters={posts.length > 0}
+                  showSpotifyFilters={anyPosts && anySpotifyInfo}
                   activeItemTypes={activeItemTypes}
                   activeSubreddits={activeSubreddits}
                   chooseSubreddits={subs => this.chooseSubreddits(subs)}
@@ -510,7 +341,7 @@ class PlaylistView extends Component {
                   chooseTime={t => this.chooseTime(t)}
                   chooseItemTypes={types => this.chooseItemTypes(types)}
                 />
-                {posts.length > 0 ? (
+                {anyPosts ? (
                   <div>
                     {filteredPosts.length > 0 ? (
                       <div>
