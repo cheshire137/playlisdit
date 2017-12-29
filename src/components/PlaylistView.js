@@ -114,7 +114,7 @@ class PlaylistView extends Component {
   }
 
   chooseItemTypes(activeItemTypes) {
-    this.setState(prevState => ({ activeItemTypes }))
+    this.setState(prevState => ({ activeItemTypes, playlist: null }))
   }
 
   chooseSubreddits(activeSubreddits) {
