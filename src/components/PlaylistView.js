@@ -3,6 +3,7 @@ import { withRouter, Redirect } from 'react-router-dom'
 import RedditAPI from '../models/RedditAPI'
 import LocalStorage from '../models/LocalStorage'
 import SpotifyAPI from '../models/SpotifyAPI'
+import SpotifyProfile from '../models/SpotifyProfile'
 import SpotifyFetcherForReddit from '../models/SpotifyFetcherForReddit'
 import RedditPost from './RedditPost'
 import Filters from './Filters'
@@ -224,16 +225,7 @@ class PlaylistView extends Component {
     }
     const name = getPlaylistName(section, time)
     const description = getPlaylistDescription(activeSubreddits)
-
-    let profile
-    try {
-      profile = await this.spotifyAPI.me()
-    } catch (error) {
-      console.error('failed to get Spotify profile', error)
-      this.setState(prevState => ({ isSaving: false }))
-      return
-    }
-    const user = profile.id
+    const user = SpotifyProfile.load().id
 
     let playlist
     try {

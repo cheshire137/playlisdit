@@ -1,5 +1,6 @@
 import Fetcher from './Fetcher'
 import LocalStorage from './LocalStorage'
+import SpotifyProfile from './SpotifyProfile'
 
 const eachSlice = (array, chunkSize) => {
   const result = []
@@ -171,6 +172,11 @@ class SpotifyAPI extends Fetcher {
     const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(`/v1/artists?ids=${encodeURIComponent(idsStr)}`, headers)
     return resp.artists
+  }
+
+  async artistTopTracks(artistID) {
+    const country = SpotifyProfile.load().country
+    const path = `/v1/artists/${artistID}/top-tracks`
   }
 
   async albums(ids) {

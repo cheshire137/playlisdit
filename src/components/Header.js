@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import SpotifyAPI from '../models/SpotifyAPI'
+import SpotifyProfile from '../models/SpotifyProfile'
 import { withRouter } from 'react-router-dom'
 
 class Header extends Component {
@@ -19,8 +20,10 @@ class Header extends Component {
   async fetchSpotifyProfile() {
     const api = new SpotifyAPI()
     let spotifyProfile
+
     try {
       spotifyProfile = await api.me()
+      SpotifyProfile.save(spotifyProfile)
       this.setState(prevState => ({ spotifyProfile }))
     } catch (error) {
       console.error('failed to fetch Spotify profile', error)

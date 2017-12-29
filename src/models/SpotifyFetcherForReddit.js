@@ -108,6 +108,7 @@ export default class SpotifyFetcherForReddit {
       if (lowercasePathname.indexOf('/artist/') > -1) {
         const parts = pathname.split(/\/artist\//i)
         const id = parts[parts.length - 1].split('?')[0]
+
         artistIDs.push(id)
         postPathnamesByArtistID[id] = pathname
       }

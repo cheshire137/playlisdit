@@ -27,7 +27,7 @@ class SpotifyLogin extends Component {
     }
 
     const redirectURI = window.location.href
-    const scopes = 'playlist-modify-public'
+    const scopes = 'playlist-modify-public user-read-private'
     const loginUrl = `https://accounts.spotify.com/authorize?` +
       `client_id=${encodeURIComponent(Config.spotify.clientID)}` +
       `&response_type=token&redirect_uri=${encodeURIComponent(redirectURI)}` +
