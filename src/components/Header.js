@@ -18,8 +18,16 @@ class Header extends Component {
 
   async fetchSpotifyProfile() {
     const api = new SpotifyAPI()
-    const spotifyProfile = await api.me()
-    this.setState(prevState => ({ spotifyProfile }))
+    let spotifyProfile
+    try {
+      spotifyProfile = await api.me()
+      this.setState(prevState => ({ spotifyProfile }))
+    } catch (error) {
+      console.error('failed to fetch Spotify profile', error)
+      if (error.response.status === 401) {
+        SpotifyAPI.signOut()
+      }
+    }
   }
 
   render() {
