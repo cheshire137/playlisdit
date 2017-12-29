@@ -310,16 +310,12 @@ class PlaylistView extends Component {
     return result
   }
 
-  async getSpotifyInfo() {
-    const { posts } = this.state
+  async getSpotifyPlaylistsByPostPathname() {
     const result = {}
     const playlistIDs = []
     const postPathnamesByPlaylistID = {}
-    const tracksByPostPathname = await this.getSpotifyTracksByPostPathname()
-    const albumsByPostPathname = await this.getSpotifyAlbumsByPostPathname()
-    const artistsByPostPathname = await this.getSpotifyArtistsByPostPathname()
 
-    for (const post of posts) {
+    for (const post of this.state.posts) {
       const pathname = post.pathname
       const lowercasePathname = pathname.toLowerCase()
 
@@ -328,6 +324,7 @@ class PlaylistView extends Component {
         const head = parts[0].split('/user/')
         const id = parts[parts.length - 1].split('?')[0]
         const user = head[head.length - 1]
+
         playlistIDs.push({ user, id })
         postPathnamesByPlaylistID[id] = pathname
       }
@@ -336,33 +333,33 @@ class PlaylistView extends Component {
     if (playlistIDs.length > 0) {
       for (const playlistID of playlistIDs) {
         let playlist
+
         try {
           playlist = await this.spotifyAPI.playlist(playlistID.user, playlistID.id)
+
           const pathname = postPathnamesByPlaylistID[playlist.id]
           result[pathname] = playlist
         } catch (error) {
           console.error('failed to fetch playlist', error)
+
           if (error.response.status === 401) {
             SpotifyAPI.signOut()
-            return
           }
         }
       }
     }
 
-    for (const pathname in tracksByPostPathname) {
-      result[pathname] = tracksByPostPathname[pathname]
-    }
-
-    for (const pathname in albumsByPostPathname) {
-      result[pathname] = albumsByPostPathname[pathname]
-    }
-
-    for (const pathname in artistsByPostPathname) {
-      result[pathname] = artistsByPostPathname[pathname]
-    }
-
     return result
+  }
+
+  async getSpotifyInfo() {
+    const tracksByPostPathname = await this.getSpotifyTracksByPostPathname(),
+      albumsByPostPathname = await this.getSpotifyAlbumsByPostPathname(),
+      artistsByPostPathname = await this.getSpotifyArtistsByPostPathname(),
+      playlistsByPostPathname = await this.getSpotifyPlaylistsByPostPathname()
+
+    return Object.assign({}, tracksByPostPathname, albumsByPostPathname,
+                         artistsByPostPathname, playlistsByPostPathname)
   }
 
   getTrackCount(visiblePosts) {
