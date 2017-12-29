@@ -3,7 +3,7 @@ import { withRouter, Redirect } from 'react-router-dom'
 import RedditAPI from '../models/RedditAPI'
 import LocalStorage from '../models/LocalStorage'
 import SpotifyAPI from '../models/SpotifyAPI'
-import SpotifyRedditPost from '../models/SpotifyRedditPost'
+import SpotifyFetcherForReddit from '../models/SpotifyFetcherForReddit'
 import RedditPost from './RedditPost'
 import Filters from './Filters'
 import PlaylistHeader from './PlaylistHeader'
@@ -188,8 +188,8 @@ class PlaylistView extends Component {
     const activeSubreddits = getActiveSubreddits(subreddits)
     this.setState(prevState => ({ posts, subreddits, activeSubreddits, playlist: null }))
 
-    const helper = new SpotifyRedditPost(this.state.posts)
-    const spotifyInfo = await helper.getSpotifyInfo()
+    const fetcher = new SpotifyFetcherForReddit(posts)
+    const spotifyInfo = await fetcher.getSpotifyInfo()
     this.setState(prevState => ({ spotifyInfo }))
   }
 

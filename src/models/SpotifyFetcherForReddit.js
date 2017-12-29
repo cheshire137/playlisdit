@@ -1,6 +1,6 @@
 import SpotifyAPI from './SpotifyAPI'
 
-export default class SpotifyRedditPost {
+export default class SpotifyFetcherForReddit {
   constructor(posts) {
     this.posts = posts
     this.spotifyAPI = new SpotifyAPI()
