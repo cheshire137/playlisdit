@@ -3,6 +3,7 @@ import SectionMenu from './SectionMenu'
 import ExternalLink from './ExternalLink'
 import TimeMenu from './TimeMenu'
 import SubredditMenu from './SubredditMenu'
+import ItemTypeMenu from './ItemTypeMenu'
 import SpotifyLogo from './SpotifyLogo'
 import NumberHelper from '../models/NumberHelper'
 
@@ -10,7 +11,8 @@ class Filters extends Component {
   render() {
     const { activeSection, activeTime, chooseSection, chooseTime,
             trackCount, subreddits, activeSubreddits, playlist,
-            chooseSubreddits, allowSave, isSaving } = this.props
+            chooseSubreddits, allowSave, isSaving, chooseItemTypes,
+            activeItemTypes, allowFilteringByItemType } = this.props
     const trackUnit = trackCount === 1 ? 'track' : 'tracks'
 
     return (
@@ -55,6 +57,12 @@ class Filters extends Component {
           <span
             className="mr-3"
           >Filters:</span>
+          {allowFilteringByItemType ? (
+            <ItemTypeMenu
+              activeItems={activeItemTypes}
+              chooseItems={chooseItemTypes}
+            />
+          ) : ''}
           {subreddits.length > 0 ? (
             <SubredditMenu
               subreddits={subreddits}

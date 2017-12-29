@@ -90,6 +90,7 @@ class PlaylistView extends Component {
       posts: null,
       spotifyInfo: {},
       activeSubreddits: [],
+      activeItemTypes: ['album', 'track', 'playlist', 'artist'],
       playlist: null,
       isSaving: false,
       time: props.match.params.time || 'day',
@@ -109,6 +110,10 @@ class PlaylistView extends Component {
 
   componentDidMount() {
     this.fetchRedditPosts()
+  }
+
+  chooseItemTypes(activeItemTypes) {
+    this.setState(prevState => ({ activeItemTypes }))
   }
 
   chooseSubreddits(activeSubreddits) {
@@ -371,11 +376,21 @@ class PlaylistView extends Component {
   }
 
   filterPosts() {
-    const { posts, activeSubreddits } = this.state
+    const { posts, activeSubreddits, activeItemTypes, spotifyInfo } = this.state
+    const anySpotifyInfo = Object.keys(spotifyInfo).length > 0
     let filteredPosts = []
+
     if (posts) {
-      filteredPosts = posts.filter(post => activeSubreddits.indexOf(post.subreddit) > -1)
+      filteredPosts = posts.filter(post => {
+        const isSubredditSelected = activeSubreddits.indexOf(post.subreddit) > -1
+        const postSpotifyInfo = spotifyInfo[post.pathname]
+        const isItemTypeSelected = !anySpotifyInfo ||
+          postSpotifyInfo && activeItemTypes.indexOf(postSpotifyInfo.type) > -1
+
+        return isSubredditSelected && isItemTypeSelected
+      })
     }
+
     return filteredPosts
   }
 
@@ -390,9 +405,10 @@ class PlaylistView extends Component {
     }
 
     const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
-            playlist } = this.state
+            playlist, activeItemTypes } = this.state
     const filteredPosts = this.filterPosts()
     const trackCount = this.getTrackCount(filteredPosts)
+    const anySpotifyInfo = Object.keys(spotifyInfo).length > 0
 
     return (
       <div>
@@ -404,16 +420,19 @@ class PlaylistView extends Component {
                 <Filters
                   playlist={playlist}
                   isSaving={isSaving}
-                  allowSave={!isSaving && Object.keys(spotifyInfo).length > 0 && !playlist}
+                  allowSave={!isSaving && anySpotifyInfo && !playlist}
+                  allowFilteringByItemType={anySpotifyInfo}
                   savePlaylist={() => this.savePlaylist()}
                   trackCount={trackCount}
                   activeSection={section}
                   activeTime={time}
                   subreddits={subreddits}
+                  activeItemTypes={activeItemTypes}
                   activeSubreddits={activeSubreddits}
                   chooseSubreddits={subs => this.chooseSubreddits(subs)}
                   chooseSection={s => this.chooseSection(s)}
                   chooseTime={t => this.chooseTime(t)}
+                  chooseItemTypes={types => this.chooseItemTypes(types)}
                 />
                 {posts.length > 0 ? (
                   <div>
