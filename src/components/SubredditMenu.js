@@ -1,32 +1,22 @@
 import React, { Component } from 'react'
 import MultiSelectMenu from './MultiSelectMenu'
-import clickOutside from 'react-click-outside'
 
-class SubredditMenu extends MultiSelectMenu {
-  getHeader() {
-    const { activeItems } = this.state
-    const { subreddits } = this.props
+class SubredditMenu extends Component {
+  render() {
+    const { subreddits, activeItems, chooseItems } = this.props
     const unit = subreddits.length === 1 ? 'subreddit' : 'subreddits'
+    const header = `${activeItems.length} of ${subreddits.length} ${unit}`
 
-    return `${activeItems.length} of ${subreddits.length} ${unit}`
-  }
-
-  getItems() {
-    return this.props.subreddits
-  }
-
-  getItemLabel(subreddit) {
-    return subreddit
-  }
-
-  handleClickOutside() {
-    this.setState(prevState => ({ isOpen: false }))
-    this.props.chooseItems(this.state.activeItems)
-  }
-
-  toggleOpen() {
-    this.setState(prevState => ({ isOpen: !prevState.isOpen }))
+    return (
+      <MultiSelectMenu
+        header={header}
+        items={subreddits}
+        getLabel={subreddit => subreddit}
+        activeItems={activeItems}
+        chooseItems={chooseItems}
+      />
+    )
   }
 }
 
-export default clickOutside(SubredditMenu)
+export default SubredditMenu

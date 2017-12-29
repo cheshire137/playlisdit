@@ -22,27 +22,18 @@ class MultiSelectMenu extends Component {
       activeItems.push(item)
     }
 
-    this.setState(prevState => ({ activeItems }))
+    this.setState(prevState => ({ activeItems }), () => {
+      this.props.chooseItems(activeItems)
+    })
   }
 
   toggleOpen() {
     this.setState(prevState => ({ isOpen: !prevState.isOpen }))
   }
 
-  getHeader() {
-    return 'Select items'
-  }
-
-  getItems() {
-    return []
-  }
-
-  getItemLabel(item) {
-    return item
-  }
-
   render() {
     const { isOpen, activeItems } = this.state
+    const { items, getLabel, header } = this.props
 
     return (
       <div className={`dropdown mr-3 ${isOpen ? 'is-active' : ''}`}>
@@ -53,7 +44,7 @@ class MultiSelectMenu extends Component {
             aria-controls="item-type-menu"
             onClick={() => this.toggleOpen()}
           >
-            <span>{this.getHeader()}</span>
+            <span>{header}</span>
             <span className="icon is-small">
               <i className="ion-arrow-down-b" aria-hidden="true" />
             </span>
@@ -61,7 +52,7 @@ class MultiSelectMenu extends Component {
         </div>
         <div className="dropdown-menu" id="item-type-menu" role="menu">
           <div className="dropdown-content">
-            {this.getItems().map(item => {
+            {items.map(item => {
               const isActive = activeItems.indexOf(item) > -1
               const domID = `item-checkbox-${item}`
 
@@ -78,7 +69,7 @@ class MultiSelectMenu extends Component {
                     id={domID}
                     onChange={() => this.toggleItemSelected(item)}
                   />
-                  {this.getItemLabel(item)}
+                  {getLabel(item)}
                 </label>
               )
             })}
