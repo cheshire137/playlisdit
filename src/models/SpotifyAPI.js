@@ -171,12 +171,18 @@ class SpotifyAPI extends Fetcher {
     const idsStr = ids.join(',')
     const headers = SpotifyAPI.authHeaders()
     const resp = await this.get(`/v1/artists?ids=${encodeURIComponent(idsStr)}`, headers)
-    return resp.artists
+    const artists = resp.artists
+    for (const artist of artists) {
+      artist.tracks = await this.artistTopTracks(artist.id)
+    }
+    return artists
   }
 
   async artistTopTracks(artistID) {
     const country = SpotifyProfile.load().country
-    const path = `/v1/artists/${artistID}/top-tracks`
+    const headers = SpotifyAPI.authHeaders()
+    const resp = await this.get(`/v1/artists/${artistID}/top-tracks?country=${country}`, headers)
+    return resp.tracks
   }
 
   async albums(ids) {
