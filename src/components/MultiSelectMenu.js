@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import clickOutside from 'react-click-outside'
 
 class MultiSelectMenu extends Component {
   constructor(props) {
@@ -8,6 +9,10 @@ class MultiSelectMenu extends Component {
 
   componentWillReceiveProps(props) {
     this.setState(prevState => ({ activeItems: props.activeItems }))
+  }
+
+  handleClickOutside() {
+    this.setState(prevState => ({ isOpen: false }))
   }
 
   toggleItemSelected(item) {
@@ -80,4 +85,4 @@ class MultiSelectMenu extends Component {
   }
 }
 
-export default MultiSelectMenu
+export default clickOutside(MultiSelectMenu)
