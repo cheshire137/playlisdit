@@ -242,6 +242,7 @@ class PlaylistView extends Component {
     const seenAlbums = []
     const seenTracks = []
     const seenPlaylists = []
+    const seenArtists = []
 
     for (const item of content) {
       if (item.type === 'album' && seenAlbums.indexOf(item.id) < 0) {
@@ -266,6 +267,15 @@ class PlaylistView extends Component {
           seenTracks.push(item.id)
         } catch (error) {
           console.error('failed to add track to playlist', error)
+        }
+
+      } else if (item.type === 'artist' && seenArtists.indexOf(item.id) < 0) {
+        try {
+          const trackURIs = item.tracks.map(track => track.uri)
+          await this.spotifyAPI.addTracksToPlaylist(user, playlist.id, trackURIs)
+          seenArtists.push(item.id)
+        } catch (error) {
+          console.error("failed to add artist's tracks to playlist", error)
         }
       }
     }
