@@ -8,6 +8,8 @@ import Filters from './Filters'
 import PlaylistHeader from './PlaylistHeader'
 import Header from './Header'
 
+const allItemTypes = ['album', 'track', 'playlist', 'artist']
+
 const caseInsensitiveCompare = (a, b) => {
   const lowerA = a.toLowerCase()
   const lowerB = b.toLowerCase()
@@ -15,6 +17,11 @@ const caseInsensitiveCompare = (a, b) => {
     return -1
   }
   return lowerA > lowerB ? 1 : 0
+}
+
+const getActiveItemTypes = () => {
+  const deselectedItemTypes = LocalStorage.get('deselectedItemTypes') || []
+  return allItemTypes.filter(itemType => deselectedItemTypes.indexOf(itemType) < 0)
 }
 
 const getActiveSubreddits = subreddits => {
@@ -91,7 +98,7 @@ class PlaylistView extends Component {
       posts: null,
       spotifyInfo: {},
       activeSubreddits: [],
-      activeItemTypes: ['album', 'track', 'playlist', 'artist'],
+      activeItemTypes: getActiveItemTypes(),
       playlist: null,
       isSaving: false,
       time: props.match.params.time || 'day',
@@ -114,6 +121,17 @@ class PlaylistView extends Component {
   }
 
   chooseItemTypes(activeItemTypes) {
+    const currentDeselectedItemTypes = allItemTypes.filter(itemType => activeItemTypes.indexOf(itemType) < 0)
+    const pastDeselectedItemTypes = LocalStorage.get('deselectedItemTypes') || []
+
+    const newDeselectedItemTypes = pastDeselectedItemTypes.filter(itemType => activeItemTypes.indexOf(itemType) < 0)
+    for (const itemType of currentDeselectedItemTypes) {
+      if (newDeselectedItemTypes.indexOf(itemType) < 0) {
+        newDeselectedItemTypes.push(itemType)
+      }
+    }
+
+    LocalStorage.set('deselectedItemTypes', newDeselectedItemTypes)
     this.setState(prevState => ({ activeItemTypes, playlist: null }))
   }
 
@@ -126,6 +144,7 @@ class PlaylistView extends Component {
     for (const subreddit of pastDeselectedSubreddits) {
       const isDeselected = activeSubreddits.indexOf(subreddit) < 0
       const isAvailable = allSubreddits.indexOf(subreddit) > -1
+
       if (isDeselected && isAvailable || !isAvailable) {
         newDeselectedSubreddits.push(subreddit)
       }
