@@ -251,6 +251,7 @@ class PlaylistView extends Component {
 
     if (albumIDs.length > 0) {
       let albums
+
       try {
         albums = await this.spotifyAPI.albums(albumIDs)
 
@@ -270,15 +271,53 @@ class PlaylistView extends Component {
     return result
   }
 
+  async getSpotifyArtistsByPostPathname() {
+    const result = {}
+    const artistIDs = []
+    const postPathnamesByArtistID = {}
+
+    for (const post of this.state.posts) {
+      const pathname = post.pathname
+      const lowercasePathname = pathname.toLowerCase()
+
+      if (lowercasePathname.indexOf('/artist/') > -1) {
+        const parts = pathname.split(/\/artist\//i)
+        const id = parts[parts.length - 1].split('?')[0]
+        artistIDs.push(id)
+        postPathnamesByArtistID[id] = pathname
+      }
+    }
+
+    if (artistIDs.length > 0) {
+      let artists
+
+      try {
+        artists = await this.spotifyAPI.artists(artistIDs)
+
+        for (const artist of artists) {
+          const pathname = postPathnamesByArtistID[artist.id]
+          result[pathname] = artist
+        }
+      } catch (error) {
+        console.error('failed to fetch Spotify artists', error)
+
+        if (error.response.status === 401) {
+          SpotifyAPI.signOut()
+        }
+      }
+    }
+
+    return result
+  }
+
   async getSpotifyInfo() {
     const { posts } = this.state
     const result = {}
-    const artistIDs = []
     const playlistIDs = []
     const postPathnamesByPlaylistID = {}
-    const postPathnamesByArtistID = {}
     const tracksByPostPathname = await this.getSpotifyTracksByPostPathname()
     const albumsByPostPathname = await this.getSpotifyAlbumsByPostPathname()
+    const artistsByPostPathname = await this.getSpotifyArtistsByPostPathname()
 
     for (const post of posts) {
       const pathname = post.pathname
@@ -291,32 +330,6 @@ class PlaylistView extends Component {
         const user = head[head.length - 1]
         playlistIDs.push({ user, id })
         postPathnamesByPlaylistID[id] = pathname
-
-      } else if (lowercasePathname.indexOf('/artist/') > -1) {
-        const parts = pathname.split(/\/artist\//i)
-        const id = parts[parts.length - 1].split('?')[0]
-        artistIDs.push(id)
-        postPathnamesByArtistID[id] = pathname
-
-      } else {
-        console.log('unrecognized Spotify type', pathname)
-      }
-    }
-
-    if (artistIDs.length > 0) {
-      let artists
-      try {
-        artists = await this.spotifyAPI.artists(artistIDs)
-        for (const artist of artists) {
-          const pathname = postPathnamesByArtistID[artist.id]
-          result[pathname] = artist
-        }
-      } catch (error) {
-        console.error('failed to fetch Spotify artists', error)
-        if (error.response.status === 401) {
-          SpotifyAPI.signOut()
-          return
-        }
       }
     }
 
@@ -343,6 +356,10 @@ class PlaylistView extends Component {
 
     for (const pathname in albumsByPostPathname) {
       result[pathname] = albumsByPostPathname[pathname]
+    }
+
+    for (const pathname in artistsByPostPathname) {
+      result[pathname] = artistsByPostPathname[pathname]
     }
 
     return result
