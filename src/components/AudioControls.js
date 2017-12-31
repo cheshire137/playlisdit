@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ExternalLink from './ExternalLink'
 import SpotifyArtist from './SpotifyArtist'
-import SpotifyLogo from './SpotifyLogo'
 
 class AudioControls extends Component {
   pauseAudio = () => {
@@ -28,10 +27,7 @@ class AudioControls extends Component {
         <ExternalLink
           url={url}
           className="spotify-link text-bold"
-        >
-          <SpotifyLogo className="mr-1" />
-          {name}
-        </ExternalLink>
+        >{name}</ExternalLink>
         <span className="track-meta">
           <span> by </span>
           {artists.map(artist => (
