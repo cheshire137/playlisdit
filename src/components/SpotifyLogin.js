@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Header from './Header'
+import Footer from './Footer'
 import SpotifyLogo from './SpotifyLogo'
 import Config from '../config.json'
 import SpotifyAPI from '../models/SpotifyAPI'
@@ -34,9 +35,9 @@ class SpotifyLogin extends Component {
       `&scope=${encodeURIComponent(scopes)}`
 
     return (
-      <div>
+      <div className="layout-container">
         <Header />
-        <section className="section">
+        <section className="section layout-children-container">
           <div className="container has-text-centered">
             <h3 className="subtitle mt-0">
               Sign into Spotify to create playlists from
@@ -51,6 +52,7 @@ class SpotifyLogin extends Component {
             </a>
           </div>
         </section>
+        <Footer />
       </div>
     )
   }

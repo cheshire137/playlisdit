@@ -104,14 +104,24 @@ svg:not(:root) {
   margin-left: 21px;
 }
 
-.audio-control-button,
-.audio-control-filler {
+.audio-control-button {
   line-height: 1;
   height: auto;
 }
 
 .audio-control-filler {
+  line-height: 1;
   width: 28px;
-  height: 26px;
+  height: 24px;
   vertical-align: middle;
+}
+
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.layout-children-container {
+  flex: 1 0 auto;
 }

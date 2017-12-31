@@ -9,6 +9,7 @@ import RedditPost from './RedditPost'
 import Filters from './Filters'
 import PlaylistHeader from './PlaylistHeader'
 import Header from './Header'
+import Footer from './Footer'
 
 const allItemTypes = ['album', 'track', 'playlist', 'artist']
 
@@ -329,9 +330,9 @@ class PlaylistView extends Component {
     const anyPosts = posts && posts.length > 0
 
     return (
-      <div>
+      <div className="layout-container">
         <Header />
-        <section className="section">
+        <section className="section layout-children-container">
           <div className="container">
             {posts ? (
               <div>
@@ -386,6 +387,7 @@ class PlaylistView extends Component {
             )}
           </div>
         </section>
+        <Footer />
       </div>
     )
   }
