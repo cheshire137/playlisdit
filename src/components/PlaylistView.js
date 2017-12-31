@@ -6,6 +6,7 @@ import SpotifyAPI from '../models/SpotifyAPI'
 import SpotifyProfile from '../models/SpotifyProfile'
 import SpotifyFetcherForReddit from '../models/SpotifyFetcherForReddit'
 import RedditPost from './RedditPost'
+import AudioControls from './AudioControls'
 import Filters from './Filters'
 import PlaylistHeader from './PlaylistHeader'
 import Header from './Header'
@@ -100,6 +101,7 @@ class PlaylistView extends Component {
     this.state = {
       isPlaying: false,
       posts: null,
+      currentTrack: null,
       spotifyInfo: {},
       activeSubreddits: [],
       activeItemTypes: getActiveItemTypes(),
@@ -304,12 +306,13 @@ class PlaylistView extends Component {
     return filteredPosts
   }
 
-  onAudioPlay() {
-    this.setState({ isPlaying: true })
+  onAudioPlay(currentTrack) {
+    console.log('currentTrack', currentTrack)
+    this.setState({ isPlaying: true, currentTrack })
   }
 
   onAudioPause() {
-    this.setState({ isPlaying: false })
+    this.setState({ isPlaying: false, currentTrack: null })
   }
 
   render() {
@@ -323,7 +326,7 @@ class PlaylistView extends Component {
     }
 
     const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
-            playlist, activeItemTypes, isPlaying } = this.state
+            playlist, activeItemTypes, isPlaying, currentTrack } = this.state
     const filteredPosts = this.filterPosts()
     const trackCount = this.getTrackCount(filteredPosts)
     const anySpotifyInfo = Object.keys(spotifyInfo).length > 0
@@ -365,7 +368,7 @@ class PlaylistView extends Component {
                             <div key={post.id}>
                               <RedditPost
                                 {...post}
-                                onAudioPlay={() => this.onAudioPlay()}
+                                onAudioPlay={track => this.onAudioPlay(track)}
                                 onAudioPause={() => this.onAudioPause()}
                                 canPlay={!isPlaying}
                                 spotifyInfo={spotifyInfo[post.pathname]}
@@ -387,6 +390,11 @@ class PlaylistView extends Component {
             )}
           </div>
         </section>
+        {currentTrack ? (
+          <AudioControls
+            {...currentTrack}
+          />
+        ) : ''}
         <Footer />
       </div>
     )

@@ -12,7 +12,7 @@ class SpotifyTrack extends Component {
   }
 
   playAudio = () => {
-    this.props.onAudioPlay()
+    this.props.onAudioPlay(this.props)
     if (this.state.includeAudioTag) {
       this.audioTag.play()
       this.setState(prevState => ({ isPlaying: true }))

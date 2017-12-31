@@ -52,7 +52,11 @@
   }
 }
 
-.spotify-link {
+.spotify-link,
+.audio-control-bar a.spotify-link,
+.audio-control-bar a.spotify-link:visited,
+.audio-control-bar a.spotify-link:active,
+.audio-control-bar a.spotify-link:link {
   color: #2ab858;
 }
 
@@ -124,4 +128,26 @@ svg:not(:root) {
 
 .layout-children-container {
   flex: 1 0 auto;
+}
+
+.audio-control-bar {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  background-color: #333;
+  color: #ccc;
+
+  a, a:link, a:active, a:visited {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  a:hover, a:focus {
+    text-decoration: underline;
+  }
+
+  .track-meta {
+    font-size: 0.9rem;
+  }
 }
