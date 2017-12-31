@@ -19,7 +19,7 @@ const arrayEquals = (arr1, arr2) => {
 class TracksList extends Component {
   render() {
     const { tracks, className, trackCount, artistIDs, onAudioPlay,
-            onAudioPause, canPlay } = this.props
+            onAudioPause, currentTrack } = this.props
 
     return (
       <div>
@@ -34,7 +34,7 @@ class TracksList extends Component {
                   hideArtists={arrayEquals(artistIDs, trackArtistIDs)}
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
-                  canPlay={canPlay}
+                  currentTrack={currentTrack}
                 />
               </li>
             )

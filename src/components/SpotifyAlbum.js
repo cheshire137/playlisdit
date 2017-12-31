@@ -7,7 +7,7 @@ import SpotifyArtist from './SpotifyArtist'
 
 class SpotifyAlbum extends Component {
   render() {
-    const { name, artists, onAudioPlay, onAudioPause, canPlay } = this.props
+    const { name, artists, onAudioPlay, onAudioPause, currentTrack } = this.props
     const tracks = this.props.tracks.items
     const url = this.props.external_urls.spotify
     const trackCount = this.props.tracks.total
@@ -33,7 +33,7 @@ class SpotifyAlbum extends Component {
           tracks={tracks}
           onAudioPlay={onAudioPlay}
           onAudioPause={onAudioPause}
-          canPlay={canPlay}
+          currentTrack={currentTrack}
           trackCount={trackCount}
           className="spotify-album-tracks-list mt-1 width-full"
         />

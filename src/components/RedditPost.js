@@ -24,7 +24,7 @@ class RedditPost extends Component {
   render() {
     const { title, url, spotifyInfo, score, commentsUrl, subreddit,
             subredditUrl, commentCount, date, scoreUnit, commentUnit,
-            onAudioPlay, onAudioPause, canPlay } = this.props
+            onAudioPlay, onAudioPause, currentTrack } = this.props
     const thumbnailUrl = this.getThumbnailUrl()
     const linkStyle = {}
     if (thumbnailUrl) {
@@ -83,7 +83,7 @@ class RedditPost extends Component {
                   {...spotifyInfo}
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
-                  canPlay={canPlay}
+                  currentTrack={currentTrack}
                 />
               ) : spotifyInfo.type === 'track' ? (
                 <SpotifyTrack
@@ -91,21 +91,21 @@ class RedditPost extends Component {
                   className="spotify-link"
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
-                  canPlay={canPlay}
+                  currentTrack={currentTrack}
                 />
               ) : spotifyInfo.type === 'album' ? (
                 <SpotifyAlbum
                   {...spotifyInfo}
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
-                  canPlay={canPlay}
+                  currentTrack={currentTrack}
                 />
               ) : spotifyInfo.type === 'artist' ? (
                 <SpotifyArtistAndTracks
                   {...spotifyInfo}
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
-                  canPlay={canPlay}
+                  currentTrack={currentTrack}
                 />
               ) : spotifyInfo.type}
             </div>

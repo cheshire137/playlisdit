@@ -6,18 +6,33 @@ import SpotifyLogo from './SpotifyLogo'
 class SpotifyTrack extends Component {
   state = { includeAudioTag: false, isPlaying: false }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.currentTrack === null) {
+      this.setState(prevState => ({ isPlaying: false }))
+    }
+  }
+
   onAudioEnded = () => {
     this.props.onAudioPause()
     this.setState(prevState => ({ isPlaying: false }))
   }
 
+  notifyAboutCurrentTrack() {
+    const audioControlInfo = Object.assign({}, this.props, {
+      audioTag: this.audioTag
+    })
+    this.props.onAudioPlay(audioControlInfo)
+  }
+
   playAudio = () => {
-    this.props.onAudioPlay(this.props)
     if (this.state.includeAudioTag) {
       this.audioTag.play()
+      this.notifyAboutCurrentTrack()
       this.setState(prevState => ({ isPlaying: true }))
     } else {
-      this.setState(prevState => ({ includeAudioTag: true, isPlaying: true }))
+      this.setState(prevState => ({ includeAudioTag: true, isPlaying: true }), () => {
+        this.notifyAboutCurrentTrack()
+      })
     }
   }
 
@@ -28,12 +43,13 @@ class SpotifyTrack extends Component {
   }
 
   render() {
-    const { artists, name, className, hideArtists, canPlay } = this.props
+    const { artists, name, className, hideArtists, currentTrack, type, id } = this.props
     const { includeAudioTag, isPlaying } = this.state
     const url = this.props.external_urls.spotify
     const audioUrl = this.props.preview_url
     const hasAudioUrl = typeof audioUrl === 'string'
-    const showPlayButton = canPlay && hasAudioUrl && !isPlaying
+    const isCurrentlyPlaying = currentTrack && currentTrack.type === type && currentTrack.id === id
+    const showPlayButton = (currentTrack === null || isCurrentlyPlaying) && hasAudioUrl && !isPlaying
     const showPauseButton = isPlaying
 
     return (

@@ -6,7 +6,7 @@ import TrackCount from './TrackCount'
 
 class SpotifyPlaylist extends Component {
   render() {
-    const { name, onAudioPlay, onAudioPause, canPlay } = this.props
+    const { name, onAudioPlay, onAudioPause, currentTrack } = this.props
     const tracks = this.props.tracks.items.map(item => item.track)
     const url = this.props.external_urls.spotify
     const trackCount = this.props.tracks.total
@@ -27,7 +27,7 @@ class SpotifyPlaylist extends Component {
           tracks={tracks}
           onAudioPlay={onAudioPlay}
           onAudioPause={onAudioPause}
-          canPlay={canPlay}
+          currentTrack={currentTrack}
           trackCount={trackCount}
           className="spotify-playlist-tracks-list mt-1 width-full"
         />

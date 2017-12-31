@@ -4,6 +4,11 @@ import SpotifyArtist from './SpotifyArtist'
 import SpotifyLogo from './SpotifyLogo'
 
 class AudioControls extends Component {
+  pauseAudio = () => {
+    this.props.audioTag.pause()
+    this.props.onAudioPause()
+  }
+
   render() {
     const { artists, name, album } = this.props
     const url = this.props.external_urls.spotify
@@ -11,6 +16,15 @@ class AudioControls extends Component {
     return (
       <div className="audio-control-bar border-top px-4 py-2">
         <span className="mr-2 d-inline-block">Currently previewing:</span>
+        <button
+          type="button"
+          onClick={this.pauseAudio}
+          className="button circle py-0 px-2 mr-2 audio-control-button is-white"
+        >
+          <span className="icon">
+            <i className="ion-ios-pause" aria-hidden="true" />
+          </span>
+        </button>
         <ExternalLink
           url={url}
           className="spotify-link text-bold"

@@ -307,7 +307,6 @@ class PlaylistView extends Component {
   }
 
   onAudioPlay(currentTrack) {
-    console.log('currentTrack', currentTrack)
     this.setState({ isPlaying: true, currentTrack })
   }
 
@@ -370,7 +369,7 @@ class PlaylistView extends Component {
                                 {...post}
                                 onAudioPlay={track => this.onAudioPlay(track)}
                                 onAudioPause={() => this.onAudioPause()}
-                                canPlay={!isPlaying}
+                                currentTrack={currentTrack ? { type: currentTrack.type, id: currentTrack.id } : null}
                                 spotifyInfo={spotifyInfo[post.pathname]}
                               />
                             </div>
@@ -393,6 +392,7 @@ class PlaylistView extends Component {
         {currentTrack ? (
           <AudioControls
             {...currentTrack}
+            onAudioPause={() => this.onAudioPause()}
           />
         ) : ''}
         <Footer />
