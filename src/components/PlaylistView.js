@@ -97,6 +97,7 @@ class PlaylistView extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      isPlaying: false,
       posts: null,
       spotifyInfo: {},
       activeSubreddits: [],
@@ -302,6 +303,14 @@ class PlaylistView extends Component {
     return filteredPosts
   }
 
+  onAudioPlay() {
+    this.setState({ isPlaying: true })
+  }
+
+  onAudioPause() {
+    this.setState({ isPlaying: false })
+  }
+
   render() {
     if (!SpotifyAPI.isAuthenticated()) {
       return (
@@ -313,7 +322,7 @@ class PlaylistView extends Component {
     }
 
     const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
-            playlist, activeItemTypes } = this.state
+            playlist, activeItemTypes, isPlaying } = this.state
     const filteredPosts = this.filterPosts()
     const trackCount = this.getTrackCount(filteredPosts)
     const anySpotifyInfo = Object.keys(spotifyInfo).length > 0
@@ -355,6 +364,9 @@ class PlaylistView extends Component {
                             <div key={post.id}>
                               <RedditPost
                                 {...post}
+                                onAudioPlay={() => this.onAudioPlay()}
+                                onAudioPause={() => this.onAudioPause()}
+                                canPlay={!isPlaying}
                                 spotifyInfo={spotifyInfo[post.pathname]}
                               />
                             </div>

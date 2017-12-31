@@ -7,6 +7,7 @@ class SpotifyTrack extends Component {
   state = { includeAudioTag: false, isPlaying: false }
 
   playAudio = () => {
+    this.props.onAudioPlay()
     if (this.state.includeAudioTag) {
       this.audioTag.play()
       this.setState(prevState => ({ isPlaying: true }))
@@ -16,16 +17,17 @@ class SpotifyTrack extends Component {
   }
 
   pauseAudio = () => {
+    this.props.onAudioPause()
     this.audioTag.pause()
     this.setState(prevState => ({ isPlaying: false }))
   }
 
   render() {
-    const { artists, name, className, hideArtists } = this.props
+    const { artists, name, className, hideArtists, canPlay } = this.props
     const { includeAudioTag, isPlaying } = this.state
     const url = this.props.external_urls.spotify
     const audioUrl = this.props.preview_url
-    const showPlayButton = typeof audioUrl === 'string' && !isPlaying
+    const showPlayButton = canPlay && typeof audioUrl === 'string' && !isPlaying
     const showPauseButton = isPlaying
 
     return (
