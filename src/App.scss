@@ -104,7 +104,14 @@ svg:not(:root) {
   margin-left: 21px;
 }
 
-.audio-control-button {
+.audio-control-button,
+.audio-control-filler {
   line-height: 1;
   height: auto;
+}
+
+.audio-control-filler {
+  width: 28px;
+  height: 26px;
+  vertical-align: middle;
 }

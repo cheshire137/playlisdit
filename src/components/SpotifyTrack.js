@@ -6,6 +6,11 @@ import SpotifyLogo from './SpotifyLogo'
 class SpotifyTrack extends Component {
   state = { includeAudioTag: false, isPlaying: false }
 
+  onAudioEnded = () => {
+    this.props.onAudioPause()
+    this.setState(prevState => ({ isPlaying: false }))
+  }
+
   playAudio = () => {
     this.props.onAudioPlay()
     if (this.state.includeAudioTag) {
@@ -27,7 +32,8 @@ class SpotifyTrack extends Component {
     const { includeAudioTag, isPlaying } = this.state
     const url = this.props.external_urls.spotify
     const audioUrl = this.props.preview_url
-    const showPlayButton = canPlay && typeof audioUrl === 'string' && !isPlaying
+    const hasAudioUrl = typeof audioUrl === 'string'
+    const showPlayButton = canPlay && hasAudioUrl && !isPlaying
     const showPauseButton = isPlaying
 
     return (
@@ -52,11 +58,14 @@ class SpotifyTrack extends Component {
               <i className="ion-ios-pause" aria-hidden="true" />
             </span>
           </button>
+        ) : hasAudioUrl ? (
+          <span className="audio-control-filler mr-2 d-inline-block" />
         ) : ''}
         {includeAudioTag ? (
           <audio
             autoPlay
             preload="metadata"
+            onEnded={this.onAudioEnded}
             src={audioUrl}
             ref={audioTag => this.audioTag = audioTag}
           />
