@@ -5,7 +5,7 @@ import SpotifyArtist from './SpotifyArtist'
 class AudioControls extends Component {
   pauseAudio = () => {
     this.props.audioTag.pause()
-    this.props.onAudioPause({ manuallyPaused: true, isFinished: false })
+    this.props.onAudioPause()
   }
 
   render() {

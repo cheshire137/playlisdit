@@ -4,56 +4,53 @@ import SpotifyArtist from './SpotifyArtist'
 import SpotifyLogo from './SpotifyLogo'
 
 class SpotifyTrack extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      includeAudioTag: props.autoPlay
-    }
-  }
+  state = { includeAudioTag: false, isPlaying: false }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.autoPlay) {
-      this.setState(prevState => ({ includeAudioTag: true }), () => {
-        if (this.audioTag) {
-          this.audioTag.play()
-        }
-      })
-    } else if (newProps.currentTrack === null) {
-      this.setState(prevState => ({ includeAudioTag: false }))
+    if (newProps.currentTrack === null) {
+      this.setState(prevState => ({ isPlaying: false }))
     }
-  }
-
-  onAudioPlaying = () => {
-    const audioControlInfo = Object.assign({}, this.props, { audioTag: this.audioTag })
-    this.props.onAudioPlay(audioControlInfo)
   }
 
   onAudioEnded = () => {
-    this.props.onAudioPause({ isFinished: true, manuallyPaused: false })
+    this.props.onAudioPause()
+    this.setState(prevState => ({ isPlaying: false }))
+  }
+
+  notifyAboutCurrentTrack() {
+    const audioControlInfo = Object.assign({}, this.props, {
+      audioTag: this.audioTag
+    })
+    this.props.onAudioPlay(audioControlInfo)
   }
 
   playAudio = () => {
     if (this.state.includeAudioTag) {
       this.audioTag.play()
+      this.notifyAboutCurrentTrack()
+      this.setState(prevState => ({ isPlaying: true }))
     } else {
-      this.setState(prevState => ({ includeAudioTag: true }))
+      this.setState(prevState => ({ includeAudioTag: true, isPlaying: true }), () => {
+        this.notifyAboutCurrentTrack()
+      })
     }
   }
 
   pauseAudio = () => {
-    this.props.onAudioPause({ isFinished: false, manuallyPaused: true })
+    this.props.onAudioPause()
     this.audioTag.pause()
+    this.setState(prevState => ({ isPlaying: false }))
   }
 
   render() {
     const { artists, name, className, hideArtists, currentTrack, type, id } = this.props
-    const { includeAudioTag } = this.state
+    const { includeAudioTag, isPlaying } = this.state
     const url = this.props.external_urls.spotify
     const audioUrl = this.props.preview_url
     const hasAudioUrl = typeof audioUrl === 'string'
     const isCurrentlyPlaying = currentTrack && currentTrack.type === type && currentTrack.id === id
-    const showPlayButton = hasAudioUrl && !isCurrentlyPlaying
-    const showPauseButton = hasAudioUrl && !showPlayButton
+    const showPlayButton = (currentTrack === null || isCurrentlyPlaying) && hasAudioUrl && !isPlaying
+    const showPauseButton = isPlaying
 
     return (
       <div className="spotify-track">
@@ -84,7 +81,6 @@ class SpotifyTrack extends Component {
           <audio
             autoPlay
             preload="metadata"
-            onPlay={this.onAudioPlaying}
             onEnded={this.onAudioEnded}
             src={audioUrl}
             ref={audioTag => this.audioTag = audioTag}

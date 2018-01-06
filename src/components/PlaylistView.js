@@ -99,6 +99,7 @@ class PlaylistView extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      isPlaying: false,
       posts: null,
       currentTrack: null,
       spotifyInfo: {},
@@ -306,12 +307,11 @@ class PlaylistView extends Component {
   }
 
   onAudioPlay(currentTrack) {
-    this.setState({ currentTrack })
+    this.setState({ isPlaying: true, currentTrack })
   }
 
-  onAudioPause(opts) {
-    this.setState(prevState => ({ currentTrack: null, manuallyPaused: opts.manuallyPaused,
-                                  isFinished: opts.isFinished }))
+  onAudioPause() {
+    this.setState({ isPlaying: false, currentTrack: null })
   }
 
   render() {
@@ -325,7 +325,7 @@ class PlaylistView extends Component {
     }
 
     const { posts, section, time, spotifyInfo, activeSubreddits, subreddits, isSaving,
-            playlist, activeItemTypes, currentTrack, manuallyPaused, isFinished } = this.state
+            playlist, activeItemTypes, isPlaying, currentTrack } = this.state
     const filteredPosts = this.filterPosts()
     const trackCount = this.getTrackCount(filteredPosts)
     const anySpotifyInfo = Object.keys(spotifyInfo).length > 0
@@ -368,11 +368,9 @@ class PlaylistView extends Component {
                               <RedditPost
                                 {...post}
                                 onAudioPlay={track => this.onAudioPlay(track)}
-                                onAudioPause={opts => this.onAudioPause(opts)}
+                                onAudioPause={() => this.onAudioPause()}
                                 currentTrack={currentTrack ? { type: currentTrack.type, id: currentTrack.id } : null}
                                 spotifyInfo={spotifyInfo[post.pathname]}
-                                isFinished={isFinished}
-                                manuallyPaused={manuallyPaused}
                               />
                             </div>
                           )
@@ -394,7 +392,7 @@ class PlaylistView extends Component {
         {currentTrack ? (
           <AudioControls
             {...currentTrack}
-            onAudioPause={opts => this.onAudioPause(opts)}
+            onAudioPause={() => this.onAudioPause()}
           />
         ) : ''}
         <Footer />

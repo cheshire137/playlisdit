@@ -24,7 +24,7 @@ class RedditPost extends Component {
   render() {
     const { title, url, spotifyInfo, score, commentsUrl, subreddit,
             subredditUrl, commentCount, date, scoreUnit, commentUnit,
-            onAudioPlay, onAudioPause, currentTrack, isFinished, manuallyPaused } = this.props
+            onAudioPlay, onAudioPause, currentTrack } = this.props
     const thumbnailUrl = this.getThumbnailUrl()
     const linkStyle = {}
     if (thumbnailUrl) {
@@ -84,8 +84,6 @@ class RedditPost extends Component {
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
                   currentTrack={currentTrack}
-                  isFinished={isFinished}
-                  manuallyPaused={manuallyPaused}
                 />
               ) : spotifyInfo.type === 'track' ? (
                 <SpotifyTrack
@@ -94,8 +92,6 @@ class RedditPost extends Component {
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
                   currentTrack={currentTrack}
-                  isFinished={isFinished}
-                  manuallyPaused={manuallyPaused}
                 />
               ) : spotifyInfo.type === 'album' ? (
                 <SpotifyAlbum
@@ -103,8 +99,6 @@ class RedditPost extends Component {
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
                   currentTrack={currentTrack}
-                  isFinished={isFinished}
-                  manuallyPaused={manuallyPaused}
                 />
               ) : spotifyInfo.type === 'artist' ? (
                 <SpotifyArtistAndTracks
@@ -112,8 +106,6 @@ class RedditPost extends Component {
                   onAudioPlay={onAudioPlay}
                   onAudioPause={onAudioPause}
                   currentTrack={currentTrack}
-                  isFinished={isFinished}
-                  manuallyPaused={manuallyPaused}
                 />
               ) : spotifyInfo.type}
             </div>
