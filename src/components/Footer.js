@@ -4,7 +4,7 @@ import ExternalLink from './ExternalLink'
 class Footer extends Component {
   render() {
     return (
-      <footer className="footer">
+      <footer className="footer text-small">
         <div className="container">
           <div className="content has-text-centered">
             <span>Built with &hearts; by </span>
