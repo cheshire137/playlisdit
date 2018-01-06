@@ -151,3 +151,85 @@ svg:not(:root) {
     font-size: 0.9rem;
   }
 }
+
+$circle-background: hsl(0, 0%, 96%);
+$circle-color: hsl(171, 100%, 41%);
+$circle-size: 24px;
+$transition-length: 1s;
+
+button.radial-progress {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  outline: none;
+
+  &:focus, &:hover {
+    outline: none;
+  }
+}
+
+@mixin rotate($degrees) {
+  -webkit-transform: rotate($degrees);
+  -moz-transform: rotate($degrees);
+  -ms-transform: rotate($degrees);
+  -o-transform: rotate($degrees);
+  transform: rotate($degrees);
+}
+
+.radial-progress-container {
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+  width: $circle-size;
+  height: $circle-size;
+
+  .button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: $circle-size;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    height: auto;
+    line-height: 1;
+  }
+}
+
+.radial-progress {
+  background-color: $circle-background;
+  width: $circle-size;
+  height: $circle-size;
+  border-radius: 50%;
+
+  .circle {
+    .fill {
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      clip: rect(0, $circle-size/2, $circle-size, 0);
+      -webkit-backface-visibility: hidden;
+      background-color: $circle-color;
+      width: $circle-size;
+      height: $circle-size;
+      transition: -webkit-transform $transition-length;
+      transition: -ms-transform $transition-length;
+      transition: transform $transition-length;
+
+      @for $i from 1 through 100 {
+        &.p#{$i} {
+          @include rotate((360/100*$i) + deg);
+        }
+      }
+    }
+  }
+}

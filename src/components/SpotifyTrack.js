@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import ExternalLink from './ExternalLink'
 import SpotifyArtist from './SpotifyArtist'
 import SpotifyLogo from './SpotifyLogo'
+import PauseButton from './PauseButton'
 
 class SpotifyTrack extends Component {
-  state = { includeAudioTag: false, isPlaying: false, progress: 50 }
+  state = { includeAudioTag: false, isPlaying: false, progress: 0 }
 
   componentWillReceiveProps(newProps) {
     if (newProps.currentTrack === null) {
@@ -20,7 +21,7 @@ class SpotifyTrack extends Component {
   onTimeUpdate = () => {
     const { currentTime, duration } = this.audioTag
     const progress = Math.round(currentTime / duration * 100)
-    // this.setState(prevState => ({ progress }))
+    this.setState(prevState => ({ progress }))
   }
 
   notifyAboutCurrentTrack() {
@@ -71,15 +72,10 @@ class SpotifyTrack extends Component {
             </span>
           </button>
         ) : showPauseButton ? (
-          <button
-            type="button"
+          <PauseButton
             onClick={this.pauseAudio}
-            className="button circle py-0 px-2 mr-2 audio-control-button is-white"
-          >
-            <span className="icon">
-              <i className="ion-ios-pause" aria-hidden="true" />
-            </span>
-          </button>
+            progress={progress}
+          />
         ) : hasAudioUrl ? (
           <span className="audio-control-filler mr-2 d-inline-block" />
         ) : ''}
