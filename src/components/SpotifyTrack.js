@@ -60,6 +60,18 @@ class SpotifyTrack extends Component {
 
     return (
       <div className="spotify-track">
+        <button
+          type="button"
+          className={`c100 track-progress-indicator p${progress}`}
+        >
+          <span>
+            <i className="ion-ios-pause" aria-hidden="true" />
+          </span>
+          <div className="slice">
+            <div className="bar" />
+            <div className="fill" />
+          </div>
+        </button>
         {showPlayButton ? (
           <button
             type="button"
@@ -70,19 +82,26 @@ class SpotifyTrack extends Component {
               <i className="ion-ios-play" aria-hidden="true" />
             </span>
           </button>
+
         ) : showPauseButton ? (
           <button
             type="button"
             onClick={this.pauseAudio}
-            className="button circle py-0 px-2 mr-2 audio-control-button is-white"
+            className={`c100 track-progress-indicator p${progress}`}
           >
-            <span className="icon">
+            <span>
               <i className="ion-ios-pause" aria-hidden="true" />
             </span>
+            <div className="slice">
+              <div className="bar" />
+              <div className="fill" />
+            </div>
           </button>
+
         ) : hasAudioUrl ? (
           <span className="audio-control-filler mr-2 d-inline-block" />
         ) : ''}
+
         {includeAudioTag ? (
           <audio
             autoPlay
