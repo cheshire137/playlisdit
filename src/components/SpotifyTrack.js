@@ -4,7 +4,7 @@ import SpotifyArtist from './SpotifyArtist'
 import SpotifyLogo from './SpotifyLogo'
 
 class SpotifyTrack extends Component {
-  state = { includeAudioTag: false, isPlaying: false }
+  state = { includeAudioTag: false, isPlaying: false, progress: 50 }
 
   componentWillReceiveProps(newProps) {
     if (newProps.currentTrack === null) {
@@ -15,6 +15,12 @@ class SpotifyTrack extends Component {
   onAudioEnded = () => {
     this.props.onAudioPause()
     this.setState(prevState => ({ isPlaying: false }))
+  }
+
+  onTimeUpdate = () => {
+    const { currentTime, duration } = this.audioTag
+    const progress = Math.round(currentTime / duration * 100)
+    // this.setState(prevState => ({ progress }))
   }
 
   notifyAboutCurrentTrack() {
@@ -44,7 +50,7 @@ class SpotifyTrack extends Component {
 
   render() {
     const { artists, name, className, hideArtists, currentTrack, type, id } = this.props
-    const { includeAudioTag, isPlaying } = this.state
+    const { includeAudioTag, isPlaying, progress } = this.state
     const url = this.props.external_urls.spotify
     const audioUrl = this.props.preview_url
     const hasAudioUrl = typeof audioUrl === 'string'
@@ -82,6 +88,7 @@ class SpotifyTrack extends Component {
             autoPlay
             preload="metadata"
             onEnded={this.onAudioEnded}
+            onTimeUpdate={this.onTimeUpdate}
             src={audioUrl}
             ref={audioTag => this.audioTag = audioTag}
           />
