@@ -1,6 +1,5 @@
 @import "primer-utilities/index.scss";
 @import "https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css";
-@import "circle.scss";
 
 .thumbnail-link {
   width: 100px;
@@ -150,23 +149,5 @@ svg:not(:root) {
 
   .track-meta {
     font-size: 0.9rem;
-  }
-}
-
-.track-progress-indicator {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  cursor: pointer;
-  outline: none;
-
-  &:focus, &:active {
-    outline: none;
   }
 }
