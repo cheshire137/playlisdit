@@ -16,6 +16,8 @@ npm start
 open http://localhost:3000/
 ```
 
+Use `yarn add [package-name]` to install packages.
+
 ## How to Deploy to Heroku
 
 Modify your Spotify app so it has your Heroku app's URL as a redirect URI, e.g.,
