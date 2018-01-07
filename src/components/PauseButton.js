@@ -5,10 +5,12 @@ class PauseButton extends Component {
     const { progress } = this.props
 
     return (
-      <div className="radial-progress-container">
-        <div className="radial-progress">
-          <div className="circle">
-            <div className={`fill p${progress}`} />
+      <div className="radial-progress-container py-0 px-2 mr-2">
+        <div className={`c100 p${progress} center`}>
+          <span />
+          <div className="slice">
+            <div className="bar" />
+            <div className="fill" />
           </div>
         </div>
         <button

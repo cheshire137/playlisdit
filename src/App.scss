@@ -152,31 +152,6 @@ svg:not(:root) {
   }
 }
 
-$circle-background: hsl(0, 0%, 96%);
-$circle-color: hsl(171, 100%, 41%);
-$circle-size: 24px;
-$transition-length: 1s;
-
-button.radial-progress {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  cursor: pointer;
-  border: none;
-  padding: 0;
-  outline: none;
-
-  &:focus, &:hover {
-    outline: none;
-  }
-}
-
 @mixin rotate($degrees) {
   -webkit-transform: rotate($degrees);
   -moz-transform: rotate($degrees);
@@ -185,18 +160,24 @@ button.radial-progress {
   transform: rotate($degrees);
 }
 
+$circle-size: 0.08em;
+$circle-size-hover: 0.04em;
+$progress-color: hsl(171, 100%, 41%);
+$pause-button-bg: #fff;
+$circle-effective-size: 26px;
+
 .radial-progress-container {
   position: relative;
   vertical-align: middle;
   display: inline-block;
-  width: $circle-size;
-  height: $circle-size;
+  width: $circle-effective-size;
+  height: $circle-effective-size;
 
   .button {
     position: absolute;
     left: 0;
     top: 0;
-    width: $circle-size;
+    width: $circle-effective-size;
     border: none;
     background-color: transparent;
     padding: 0;
@@ -205,31 +186,109 @@ button.radial-progress {
   }
 }
 
-.radial-progress {
-  background-color: $circle-background;
-  width: $circle-size;
-  height: $circle-size;
+.c100 {
+  *, *:before, *:after {
+    box-sizing: content-box;
+  }
+
+  position: absolute;
+  font-size: $circle-effective-size;
+  left: 0;
+  top: 0;
+  width: 1em;
+  height: 1em;
   border-radius: 50%;
+  float: left;
+  margin: 0 0.1em 0.1em 0;
+  background-color: $pause-button-bg;
 
-  .circle {
-    .fill {
-      border-radius: 50%;
+  &.center{
+    float: none;
+    margin: 0 auto;
+  }
+
+  > span {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 5em;
+    line-height: 5em;
+    font-size: 0.2em;
+    color: $pause-button-bg;
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    transition: all 0.2s ease-out;
+  }
+
+  &:after{
+    position: absolute;
+    top: $circle-size;
+    left: $circle-size;
+    display: block;
+    content: " ";
+    border-radius: 50%;
+    background-color: $pause-button-bg;
+    width: 1 - (2 * $circle-size);
+    height: 1 - (2 * $circle-size);
+    transition: all 0.2s ease-in;
+  }
+
+  .slice {
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    clip: rect(0em, 1em, 1em, 0.5em);
+  }
+
+  .bar {
+    position: absolute;
+    border: $circle-size solid $progress-color;
+    width: 1 - (2 * $circle-size);
+    height: 1 - (2 * $circle-size);
+    clip: rect(0, 0.5em, 1em, 0);
+    border-radius: 50%;
+    @include rotate(0deg);
+  }
+
+  @for $j from 51 through 100 {
+    &.p#{$j} .slice {
+      clip: rect(auto, auto, auto, auto);
+    }
+
+    &.p#{$j} .bar:after{
+      @include rotate(180deg);
+    }
+
+    &.p#{$j} .fill{
       position: absolute;
-      top: 0;
-      clip: rect(0, $circle-size/2, $circle-size, 0);
-      -webkit-backface-visibility: hidden;
-      background-color: $circle-color;
-      width: $circle-size;
-      height: $circle-size;
-      transition: -webkit-transform $transition-length;
-      transition: -ms-transform $transition-length;
-      transition: transform $transition-length;
+      border: $circle-size solid $progress-color;
+      width: 1 - (2 * $circle-size);
+      height: 1 - (2 * $circle-size);
+      clip: rect(0, 0.5em, 1em, 0);
+      border-radius: 50%;
+      @include rotate(0deg);
+      @include rotate(180deg);
+    }
+  }
 
-      @for $i from 1 through 100 {
-        &.p#{$i} {
-          @include rotate((360/100*$i) + deg);
-        }
-      }
+  // loop to rotate all 100 circles
+  @for $j from 1 through 100 {
+    &.p#{$j} .bar {
+      @include rotate((360/100*$j) + deg);
+    }
+  }
+
+  &:hover{
+    cursor: default;
+
+    &:after{
+      top: $circle-size-hover;
+      left: $circle-size-hover;
+      width: 1 - (2 * $circle-size-hover);
+      height: 1 - (2 * $circle-size-hover);
     }
   }
 }
