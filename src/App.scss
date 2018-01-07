@@ -161,7 +161,6 @@ svg:not(:root) {
 }
 
 $circle-size: 0.08em;
-$circle-size-hover: 0.04em;
 $progress-color: hsl(171, 100%, 41%);
 $pause-button-bg: #fff;
 $circle-effective-size: 25px;
@@ -283,12 +282,5 @@ $circle-effective-size: 25px;
 
   &:hover{
     cursor: default;
-
-    &:after{
-      top: $circle-size-hover;
-      left: $circle-size-hover;
-      width: 1 - (2 * $circle-size-hover);
-      height: 1 - (2 * $circle-size-hover);
-    }
   }
 }
